@@ -8,7 +8,7 @@ require "connection_pool"
 require "date"
 
 set :bind, "0.0.0.0"
-set :port, ENV.fetch("PORT", 8000).to_i
+set :port, ENV.fetch("PORT", 8085).to_i
 set :show_exceptions, false
 
 DATABASE_URL = ENV.fetch("DATABASE_URL", "postgres://anava:anava@localhost:5432/anava")

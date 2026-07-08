@@ -11,7 +11,7 @@ RUN bundle install --jobs 4
 
 COPY . .
 
-ENV PORT=8000
-EXPOSE 8000
+ENV PORT=8085
+EXPOSE 8085
 
-CMD ["bundle", "exec", "rackup", "config.ru", "-o", "0.0.0.0", "-p", "8000"]
+CMD ["bundle", "exec", "rackup", "config.ru", "-o", "0.0.0.0", "-p", "8085"]
