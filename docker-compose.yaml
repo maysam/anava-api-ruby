@@ -21,8 +21,8 @@ services:
     environment:
       DATABASE_URL: postgres://anava:anava@db:5432/anava
       PORT: 8000
-    ports:
-      - "8000:8000"
+    expose:
+      - "8000"
     depends_on:
       db:
         condition: service_healthy

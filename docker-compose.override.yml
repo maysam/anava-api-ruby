@@ -1,0 +1,7 @@
+# Auto-merged by `docker compose up` for local development only.
+# Coolify deploys with `-f docker-compose.yaml` explicitly, so it never sees this file —
+# publishing the api port here would otherwise collide with other services on the host.
+services:
+  api:
+    ports:
+      - "8000:8000"
