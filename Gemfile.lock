@@ -1,0 +1,68 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    base64 (0.3.0)
+    connection_pool (2.5.5)
+    logger (1.7.0)
+    multi_json (1.21.1)
+    mustermann (3.1.1)
+    nio4r (2.7.5)
+    pg (1.6.3)
+    pg (1.6.3-aarch64-linux)
+    pg (1.6.3-aarch64-linux-musl)
+    pg (1.6.3-arm64-darwin)
+    pg (1.6.3-x86_64-darwin)
+    pg (1.6.3-x86_64-linux)
+    pg (1.6.3-x86_64-linux-musl)
+    puma (6.6.1)
+      nio4r (~> 2.0)
+    rack (3.2.6)
+    rack-cors (2.0.2)
+      rack (>= 2.0.0)
+    rack-protection (4.2.1)
+      base64 (>= 0.1.0)
+      logger (>= 1.6.0)
+      rack (>= 3.0.0, < 4)
+    rack-session (2.1.2)
+      base64 (>= 0.1.0)
+      rack (>= 3.0.0)
+    rackup (2.3.1)
+      rack (>= 3)
+    sinatra (4.2.1)
+      logger (>= 1.6.0)
+      mustermann (~> 3.0)
+      rack (>= 3.0.0, < 4)
+      rack-protection (= 4.2.1)
+      rack-session (>= 2.0.0, < 3)
+      tilt (~> 2.0)
+    sinatra-contrib (4.2.1)
+      multi_json (>= 0.0.2)
+      mustermann (~> 3.0)
+      rack-protection (= 4.2.1)
+      sinatra (= 4.2.1)
+      tilt (~> 2.0)
+    tilt (2.8.0)
+
+PLATFORMS
+  aarch64-linux
+  aarch64-linux-musl
+  arm64-darwin
+  ruby
+  x86_64-darwin
+  x86_64-linux
+  x86_64-linux-musl
+
+DEPENDENCIES
+  connection_pool (~> 2.4)
+  pg (~> 1.5)
+  puma (~> 6.4)
+  rack-cors (~> 2.0)
+  rackup (~> 2.1)
+  sinatra (~> 4.0)
+  sinatra-contrib (~> 4.0)
+
+RUBY VERSION
+   ruby 3.3.8p144
+
+BUNDLED WITH
+   2.7.2
