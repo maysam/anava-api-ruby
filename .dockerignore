@@ -4,3 +4,7 @@ docker-compose.yml
 README.md
 Gemfile.lock
 vendor/bundle
+log/*
+tmp/*
+!tmp/pids
+tmp/pids/*

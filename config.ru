@@ -1,3 +1,6 @@
-require_relative "app"
+# frozen_string_literal: true
 
-run Sinatra::Application
+require_relative 'config/environment'
+
+run Rails.application
+Rails.application.load_server

@@ -12,6 +12,7 @@ RUN bundle install --jobs 4
 COPY . .
 
 ENV PORT=8085
+ENV RAILS_ENV=production
 EXPOSE 8085
 
-CMD ["bundle", "exec", "rackup", "config.ru", "-o", "0.0.0.0", "-p", "8085"]
+CMD ["bundle", "exec", "puma", "-C", "config/puma.rb"]

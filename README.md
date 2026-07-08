@@ -1,7 +1,12 @@
-# Anava API — Ruby/Sinatra Clone
+# Anava API — Ruby on Rails (light/API-only)
 
 A standalone Ruby clone of the Supabase edge function in `supabase/functions/anava/index.ts`.
 It exposes the same endpoints and response shapes, backed by plain Postgres instead of Supabase.
+
+This is a **light** Rails app: `config.api_only = true`, and only Action Pack (routing +
+controllers), Active Record, and Railties are loaded — no Action View, no asset pipeline, no
+Action Mailer/Cable/Storage. Data access is through Active Record (`app/models/recording.rb`); the
+schema itself is still owned entirely by `db/init.sql` (see "Database schema" below).
 
 ## Run with Docker Compose
 
@@ -10,7 +15,7 @@ cd anava-ruby
 docker compose up --build
 ```
 
-- API: http://localhost:8085/anava/health (published via `docker-compose.override.yml`, local dev only)
+- API: http://localhost:8085/api/v1/health (published via `docker-compose.override.yml`, local dev only)
 - Postgres: localhost:5433 (user/password/db: `anava`), schema auto-applied from `db/init.sql` on first start
 
 ## Deploying on Coolify
@@ -30,7 +35,8 @@ Coolify's built-in proxy route to it — this avoids host-port collisions entire
 
 ```bash
 bundle install
-DATABASE_URL=postgres://anava:anava@localhost:5433/anava bundle exec rackup -p 8085
+DATABASE_URL=postgres://anava:anava@localhost:5433/anava bundle exec puma -C config/puma.rb
+# or: bin/rails server
 ```
 
 ## Endpoints
@@ -39,18 +45,40 @@ Same as the original API (see the root README for request/response details):
 
 | Method | Path |
 |--------|------|
-| GET | `/anava/health` |
-| GET | `/anava/statistics?userId=` |
-| POST | `/anava/recordings` |
-| GET | `/anava/recordings` |
-| GET | `/anava/recordings/:id` |
-| GET | `/anava/recordings/user/:userId` |
-| GET | `/anava/recordings/analytics/:userId` |
-| GET | `/anava/models` |
-| GET | `/anava/recordings/model/:model` |
-| GET | `/anava/recordings/analytics-by-model/:model` |
-| PUT | `/anava/recordings/:id` |
-| DELETE | `/anava/recordings/:id` |
+| GET | `/api/v1/health` |
+| GET | `/api/v1/statistics?userId=` |
+| POST | `/api/v1/recordings` |
+| GET | `/api/v1/recordings` |
+| GET | `/api/v1/recordings/:id` |
+| GET | `/api/v1/recordings/user/:userId` |
+| GET | `/api/v1/recordings/analytics/:userId` |
+| GET | `/api/v1/models` |
+| GET | `/api/v1/recordings/model/:model` |
+| GET | `/api/v1/recordings/analytics-by-model/:model` |
+| PUT | `/api/v1/recordings/:id` |
+| DELETE | `/api/v1/recordings/:id` |
+
+## Project layout
+
+```
+app/models/recording.rb            # Active Record model + query-filter scope helper
+app/services/recording_analytics.rb # analytics/ranking/stats logic built on top of Recording
+app/controllers/                    # one controller per resource (health, statistics, device_models, recordings)
+config/database.yml                 # Active Record connection config, reads DATABASE_URL
+config/initializers/cors.rb         # rack-cors, mirrors the old before-filter CORS headers
+config/routes.rb                    # maps /api/v1/* paths to controllers
+```
+
+## Database schema
+
+Schema, indexes, and triggers all live in `db/init.sql`, auto-applied by the official Postgres
+image on first container start (see `docker-compose.yaml`). There are intentionally **no Active
+Record migrations** — the `recordings` table is treated as already existing/schema-first, so
+`db/init.sql` remains the single source of truth; changes to the schema should be made directly
+there. (The old `get_user_rank()`/`get_user_count()` Postgres functions in `db/init.sql` are no
+longer called by the app — leaderboard ranking is now computed in Ruby via `RecordingAnalytics.user_rank`,
+grouping/averaging through Active Record instead of calling into the DB function. They're left in
+place in case anything else still relies on them.)
 
 ## Configuration
 
@@ -58,4 +86,5 @@ Same as the original API (see the root README for request/response details):
 |---------|---------|---------|
 | `DATABASE_URL` | `postgres://anava:anava@localhost:5432/anava` | Postgres connection string |
 | `PORT` | `8085` | HTTP listen port |
-| `DB_POOL_SIZE` | `5` | Connection pool size |
+| `DB_POOL_SIZE` | `5` | Active Record connection pool size |
+| `RAILS_ENV` | `development` | `development` or `production` (set to `production` in Docker) |
