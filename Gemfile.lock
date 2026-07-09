@@ -175,6 +175,12 @@ GEM
       prism (~> 1.7)
     ruby-progressbar (1.13.0)
     securerandom (0.4.1)
+    sqlite3 (2.9.5-aarch64-linux-gnu)
+    sqlite3 (2.9.5-aarch64-linux-musl)
+    sqlite3 (2.9.5-arm64-darwin)
+    sqlite3 (2.9.5-x86_64-darwin)
+    sqlite3 (2.9.5-x86_64-linux-gnu)
+    sqlite3 (2.9.5-x86_64-linux-musl)
     thor (1.5.0)
     timeout (0.6.1)
     tsort (0.2.0)
@@ -207,6 +213,7 @@ DEPENDENCIES
   railties (~> 8.0)
   rspec-rails (~> 6.0)
   rubocop (~> 1.88)
+  sqlite3 (~> 2.0)
 
 RUBY VERSION
    ruby 3.3.8p144

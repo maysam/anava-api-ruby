@@ -15,7 +15,7 @@ cd anava-ruby
 docker compose up --build
 ```
 
-- API: http://localhost:8085/api/v1/health (published via `docker-compose.override.yml`, local dev only)
+- API: http://localhost:8085/health (published via `docker-compose.override.yml`, local dev only)
 - Postgres: localhost:5433 (user/password/db: `anava`), schema auto-applied from `db/init.sql` on first start
 
 ## Deploying on Coolify
@@ -45,7 +45,7 @@ Same as the original API (see the root README for request/response details):
 
 | Method | Path |
 |--------|------|
-| GET | `/api/v1/health` |
+| GET | `/health` |
 | GET | `/api/v1/statistics?userId=` |
 | POST | `/api/v1/recordings` |
 | GET | `/api/v1/recordings` |
@@ -88,3 +88,19 @@ place in case anything else still relies on them.)
 | `PORT` | `8085` | HTTP listen port |
 | `DB_POOL_SIZE` | `5` | Active Record connection pool size |
 | `RAILS_ENV` | `development` | `development` or `production` (set to `production` in Docker) |
+
+## Running the specs
+
+```bash
+bundle exec rspec
+```
+
+Tests run against SQLite (`db/test.sqlite3`, gitignored) rather than Postgres — no external
+database server needed. `db/init.sql` isn't portable to SQLite (`SERIAL`, trigger functions), so
+`spec/support/schema.rb` (re)creates a plain `recordings` table via Active Record's schema DSL
+before the suite runs; development/production are untouched and still use Postgres via
+`DATABASE_URL` (see `config/database.yml`).
+
+`spec/models/`, `spec/services/`, and `spec/requests/` cover the `Recording` model's query
+filtering, `RecordingAnalytics` (including the tie-breaking rank calculation), and the endpoints
+end-to-end. Test data is built with FactoryBot (`spec/factories/recordings.rb`) and Faker.

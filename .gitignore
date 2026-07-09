@@ -9,3 +9,10 @@
 /.bundle
 /vendor/bundle
 .env
+
+# Ignore key files for decrypting credentials and more.
+/config/*.key
+
+# SQLite test database (see spec/support/schema.rb)
+/db/*.sqlite3
+

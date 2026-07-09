@@ -27,7 +27,7 @@ services:
       db:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8085/anava/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:8085/health"]
       interval: 120s
       timeout: 5s
       retries: 5

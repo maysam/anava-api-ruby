@@ -1,16 +1,26 @@
 default: &default
-  adapter: postgresql
   pool: <%= ENV.fetch("DB_POOL_SIZE", 5) %>
-  timeout: 5000
 
 development:
   <<: *default
+  adapter: postgresql
+  timeout: 5000
   url: <%= ENV.fetch("DATABASE_URL", "postgres://anava:anava@localhost:5432/anava") %>
 
+# SQLite instead of Postgres: no external database server needed to run the
+# suite, and db/init.sql (SERIAL, trigger functions) isn't portable to it
+# anyway. The recordings table is (re)created by spec/support/schema.rb.
 test:
   <<: *default
-  url: <%= ENV.fetch("DATABASE_URL", "postgres://anava:anava@localhost:5432/anava_test") %>
+  adapter: sqlite3
+  database: db/test.sqlite3
+  timeout: 5000
 
 production:
   <<: *default
-  url: <%= ENV.fetch("DATABASE_URL") %>
+  adapter: postgresql
+  timeout: 5000
+  # No fallback here (unlike development) — production must not silently
+  # default to a local Postgres. ENV[] (not .fetch) so parsing this file
+  # doesn't blow up in other environments just because DATABASE_URL is unset.
+  url: <%= ENV["DATABASE_URL"] %>
