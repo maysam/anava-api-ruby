@@ -1,0 +1,520 @@
+---
+openapi: 3.0.1
+info:
+  title: Anava API
+  version: v1
+  description: Recording management API (health, statistics, recordings CRUD, analytics,
+    device models).
+paths:
+  "/api/v1/models":
+    get:
+      summary: list distinct device models
+      tags:
+      - Device models
+      responses:
+        '200':
+          description: successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  models:
+                    type: array
+                    items:
+                      type: string
+  "/health":
+    get:
+      summary: check API health
+      tags:
+      - Health
+      responses:
+        '200':
+          description: API is running
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                  timestamp:
+                    type: string
+                    format: date-time
+  "/api/v1/recordings":
+    get:
+      summary: list recordings
+      tags:
+      - Recordings
+      parameters:
+      - name: userId
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: date
+        in: query
+        required: false
+        description: Exact date filter (YYYY-MM-DD)
+        schema:
+          type: string
+      - name: startDate
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: endDate
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+      - name: offset
+        in: query
+        required: false
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: array
+                    items:
+                      "$ref": "#/components/schemas/Recording"
+                  pagination:
+                    type: object
+                    properties:
+                      total:
+                        type: integer
+                      limit:
+                        type: integer
+                      offset:
+                        type: integer
+    post:
+      summary: create a recording
+      tags:
+      - Recordings
+      parameters: []
+      description: |
+        `duration` is computed from start_timestamp/end_timestamp if omitted. `model`, `build`, and
+        `version` are always overwritten server-side from the X-Device-Model, X-Forwarded-For, and
+        X-App-Version headers.
+
+        Instead of a JSON body, this endpoint also accepts `multipart/form-data` with the same
+        fields (as form fields) plus a `file` part holding the recording's WAV audio -- its saved
+        path is then stored as `file_path`. Not modeled below since this schema only describes the
+        JSON request body.
+      responses:
+        '200':
+          description: recording created; returns the creator's updated analytics
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: object
+                    description: Same shape as GET /api/v1/statistics's data
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_id:
+                  type: string
+                date:
+                  type: string
+                  format: date
+                slot_id:
+                  type: integer
+                start_timestamp:
+                  type: integer
+                  format: int64
+                end_timestamp:
+                  type: integer
+                  format: int64
+                amplitudes_json:
+                  type: string
+                percentage:
+                  type: integer
+                longitude:
+                  type: number
+                latitude:
+                  type: number
+              required:
+              - user_id
+              - date
+              - slot_id
+              - start_timestamp
+              - end_timestamp
+              - amplitudes_json
+  "/api/v1/recordings/{id}":
+    parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: integer
+    get:
+      summary: show a recording
+      tags:
+      - Recordings
+      responses:
+        '200':
+          description: successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    "$ref": "#/components/schemas/Recording"
+        '404':
+          description: recording not found
+    put:
+      summary: update a recording
+      tags:
+      - Recordings
+      parameters: []
+      responses:
+        '200':
+          description: recording updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    "$ref": "#/components/schemas/Recording"
+        '400':
+          description: no writable fields given
+        '404':
+          description: recording not found
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              description: Any subset of the writable Recording fields; at least one
+                is required.
+    delete:
+      summary: delete a recording
+      tags:
+      - Recordings
+      responses:
+        '200':
+          description: recording deleted
+  "/api/v1/recordings/user/{user_id}":
+    parameters:
+    - name: user_id
+      in: path
+      required: true
+      schema:
+        type: string
+    get:
+      summary: list a user's recordings, grouped by date
+      tags:
+      - Recordings
+      parameters:
+      - name: date
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: startDate
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: endDate
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+      - name: offset
+        in: query
+        required: false
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: array
+                    items:
+                      "$ref": "#/components/schemas/Recording"
+                  groupedByDate:
+                    type: object
+                    description: Recordings keyed by ISO date string
+                  pagination:
+                    type: object
+                    properties:
+                      total:
+                        type: integer
+                      limit:
+                        type: integer
+                      offset:
+                        type: integer
+  "/api/v1/recordings/analytics/{user_id}":
+    parameters:
+    - name: user_id
+      in: path
+      required: true
+      schema:
+        type: string
+    get:
+      summary: get a user's daily/weekly/monthly recording analytics
+      tags:
+      - Recordings
+      responses:
+        '200':
+          description: successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  analytics:
+                    type: object
+                    properties:
+                      daily:
+                        type: object
+                      weekly:
+                        type: object
+                      monthly:
+                        type: object
+  "/api/v1/recordings/model/{model}":
+    parameters:
+    - name: model
+      in: path
+      required: true
+      schema:
+        type: string
+    get:
+      summary: list recordings for a device model, grouped by date
+      tags:
+      - Recordings
+      parameters:
+      - name: date
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: startDate
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: endDate
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+      - name: offset
+        in: query
+        required: false
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: array
+                    items:
+                      "$ref": "#/components/schemas/Recording"
+                  groupedByDate:
+                    type: object
+                  pagination:
+                    type: object
+                    properties:
+                      total:
+                        type: integer
+                      limit:
+                        type: integer
+                      offset:
+                        type: integer
+  "/api/v1/recordings/analytics-by-model/{model}":
+    parameters:
+    - name: model
+      in: path
+      required: true
+      schema:
+        type: string
+    get:
+      summary: get a device model's daily/weekly/monthly recording analytics
+      tags:
+      - Recordings
+      responses:
+        '200':
+          description: successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  analytics:
+                    type: object
+                    properties:
+                      daily:
+                        type: object
+                      weekly:
+                        type: object
+                      monthly:
+                        type: object
+  "/api/v1/statistics":
+    get:
+      summary: get a user's statistics
+      tags:
+      - Statistics
+      parameters:
+      - name: userId
+        in: query
+        required: false
+        description: User to compute statistics/ranking for
+        schema:
+          type: string
+      responses:
+        '200':
+          description: successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: object
+                    properties:
+                      totalRecordings:
+                        type: integer
+                      totalDuration:
+                        type: integer
+                      averagePercentage:
+                        type: integer
+                      averageDuration:
+                        type: integer
+                      rankingToday:
+                        type: integer
+                      rankingLastWeek:
+                        type: integer
+                      rankingLastMonth:
+                        type: integer
+                      total:
+                        type: integer
+                      totalPlayersCount:
+                        type: integer
+servers:
+- url: http://localhost:8085
+  description: Local Docker Compose
+components:
+  schemas:
+    Recording:
+      type: object
+      properties:
+        id:
+          type: integer
+        user_id:
+          type: string
+        model:
+          type: string
+          description: Device model; server-assigned from the X-Device-Model header
+        build:
+          type: string
+          description: Client's IP, server-assigned from the X-Forwarded-For header
+        version:
+          type: string
+          description: App version; server-assigned from the X-App-Version header
+        date:
+          type: string
+          format: date
+        slot_id:
+          type: integer
+        start_timestamp:
+          type: integer
+          format: int64
+          description: Epoch milliseconds
+        end_timestamp:
+          type: integer
+          format: int64
+          description: Epoch milliseconds
+        amplitudes_json:
+          type: string
+          description: JSON-encoded array of amplitude samples
+        longitude:
+          type: string
+          nullable: true
+          description: Decimal degrees; a JSON string (Active Record serializes BigDecimal
+            as a string, not a JSON number)
+        latitude:
+          type: string
+          nullable: true
+          description: Decimal degrees; a JSON string (Active Record serializes BigDecimal
+            as a string, not a JSON number)
+        duration:
+          type: integer
+          nullable: true
+          description: Seconds; computed from timestamps if omitted
+        percentage:
+          type: integer
+          nullable: true
+        file_path:
+          type: string
+          nullable: true
+          description: Path to the recording's stored WAV file, if any
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time

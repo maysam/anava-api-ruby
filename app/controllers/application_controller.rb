@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ApplicationController < ActionController::API
   class InvalidRequestError < StandardError; end
 
@@ -6,9 +8,10 @@ class ApplicationController < ActionController::API
   # specific InvalidRequestError one for the latter to win.
   rescue_from StandardError, with: :render_server_error
   rescue_from InvalidRequestError, with: :render_bad_request
+  rescue_from AudioFileStorage::InvalidWaveFileError, with: :render_bad_request
 
   def route_not_found
-    render json: { success: false, error: "Not found" }, status: :not_found
+    render json: { success: false, error: 'Not found' }, status: :not_found
   end
 
   private
@@ -16,7 +19,7 @@ class ApplicationController < ActionController::API
   def parsed_json_body
     JSON.parse(request.body.read)
   rescue JSON::ParserError
-    raise InvalidRequestError, "Invalid JSON body"
+    raise InvalidRequestError, 'Invalid JSON body'
   end
 
   def render_bad_request(error)

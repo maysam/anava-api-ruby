@@ -13,6 +13,10 @@
 # Ignore key files for decrypting credentials and more.
 /config/*.key
 
-# SQLite test database (see spec/support/schema.rb)
+# SQLite test database (see db/schema.rb)
 /db/*.sqlite3
+
+# Uploaded WAV audio files (see app/services/audio_file_storage.rb)
+/storage/*
+!/storage/.keep
 
