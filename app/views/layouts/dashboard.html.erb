@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anava Recordings Dashboard</title>
+    <link rel="stylesheet" href="/dashboard.css">
+    <script src="/vendor/chart.umd.min.js" defer></script>
+    <script src="/dashboard.js" defer></script>
+  </head>
+  <body>
+    <%= yield %>
+
+    <%# Recording detail modal — populated client-side by dashboard.js %>
+    <div id="recording-modal" class="modal-overlay" hidden>
+      <div class="modal" role="dialog" aria-modal="true" aria-label="Recording details">
+        <div class="modal-header">
+          <span class="modal-title">Recording Details</span>
+          <button type="button" class="modal-close" aria-label="Close">&times;</button>
+        </div>
+
+        <div class="info-grid"></div>
+
+        <section data-amplitude-section hidden>
+          <div class="section-label"><span>Amplitude Waveform</span></div>
+          <div class="chart-wrap" style="height: 120px;">
+            <canvas id="amplitude-canvas"></canvas>
+          </div>
+        </section>
+
+        <section data-map-section hidden>
+          <div class="section-label">📍&nbsp;<span>Location</span></div>
+          <iframe class="map" title="Recording location" loading="lazy" referrerpolicy="no-referrer"></iframe>
+        </section>
+
+        <section>
+          <button type="button" class="btn btn-block" data-download>⬇&nbsp; Download JSON</button>
+        </section>
+      </div>
+    </div>
+  </body>
+</html>

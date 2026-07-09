@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
+  # Server-rendered web dashboard (native Rails/ERB port of the anava-web
+  # React reference app). See DashboardController.
+  root 'dashboard#index'
+
   mount Rswag::Ui::Engine => '/api-docs'
   mount Rswag::Api::Engine => '/api-docs'
   get 'health', to: 'health#show'

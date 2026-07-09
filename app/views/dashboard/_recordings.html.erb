@@ -1,0 +1,101 @@
+<div class="card">
+  <div class="card-header">
+    <h2 class="card-title">All Recordings</h2>
+    <p class="card-description">View and manage recordings grouped by day</p>
+  </div>
+  <div class="card-content">
+    <div class="filters">
+      <div class="group">
+        <label class="field-label" for="range-select">Date range:</label>
+        <select class="select" id="range-select" data-nav="range">
+          <% {
+               "all" => "All time", "today" => "Today", "yesterday" => "Yesterday",
+               "this_week" => "This week", "last_week" => "Last week",
+               "this_month" => "This month", "last_month" => "Last month"
+             }.each do |value, label| %>
+            <option value="<%= value %>" <%= "selected" if value == @range %>><%= label %></option>
+          <% end %>
+        </select>
+      </div>
+
+      <div class="group">
+        <label class="field-label" for="per-page-select">Per page:</label>
+        <select class="select" id="per-page-select" data-nav="per_page">
+          <% DashboardController::PER_PAGE_OPTIONS.each do |size| %>
+            <option value="<%= size %>" <%= "selected" if size == @per_page %>><%= size %></option>
+          <% end %>
+        </select>
+      </div>
+
+      <% if @total.positive? %>
+        <span class="total"><%= pluralize(@total, "recording") %> total</span>
+      <% end %>
+    </div>
+
+    <% if @grouped_recordings.empty? %>
+      <div class="state">
+        <div class="icon" style="font-size:2rem;">🎧</div>
+        <p>No recordings found for this selection</p>
+      </div>
+    <% else %>
+      <% today = Date.current.to_s %>
+      <% @grouped_recordings.each do |date, rows| %>
+        <% expanded = date == today %>
+        <% total_duration = rows.sum { |recording| recording.duration.to_i } %>
+        <div class="card day-card">
+          <div class="day-header" role="button" tabindex="0" aria-expanded="<%= expanded %>">
+            <div class="day-header-left">
+              <span class="chevron" aria-hidden="true">▶</span>
+              <span class="day-title"><%= format_day_header(date) %></span>
+            </div>
+            <div class="day-meta">
+              <span>🎵 <%= pluralize(rows.length, "recording") %></span>
+              <span>⏱ <%= format_duration_short(total_duration) %> total</span>
+            </div>
+          </div>
+          <div class="day-body" <%= "hidden" unless expanded %>>
+            <% rows.each do |recording| %>
+              <div class="rec-row" data-recording-id="<%= recording.id %>">
+                <div class="rec-main">
+                  <div class="rec-top">
+                    <span class="rec-slot"><%= slot_name(recording.slot_id) %></span>
+                    <span class="rec-time"><%= format_time(recording.end_timestamp) %></span>
+                  </div>
+                  <div class="rec-sub">
+                    <span>🕒 <%= format_duration_short(recording.duration) %></span>
+                    <% if recording.percentage.present? %>
+                      <span>📈 <%= recording.percentage %>%</span>
+                    <% end %>
+                  </div>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+
+      <% if @total_pages > 1 %>
+        <% page_href = ->(n) { "/?" + { model: @selected_model, tab: "recordings", range: @range, per_page: @per_page, page: n }.to_query } %>
+        <div class="pagination">
+          <span class="pages">Page <%= @page %> of <%= @total_pages %></span>
+          <div class="controls">
+            <% if @page > 1 %>
+              <a class="btn btn-icon" href="<%= page_href.call(1) %>" title="First page">«</a>
+              <a class="btn btn-icon" href="<%= page_href.call(@page - 1) %>" title="Previous page">‹</a>
+            <% else %>
+              <button class="btn btn-icon" disabled title="First page">«</button>
+              <button class="btn btn-icon" disabled title="Previous page">‹</button>
+            <% end %>
+            <% if @page < @total_pages %>
+              <a class="btn btn-icon" href="<%= page_href.call(@page + 1) %>" title="Next page">›</a>
+              <a class="btn btn-icon" href="<%= page_href.call(@total_pages) %>" title="Last page">»</a>
+            <% else %>
+              <button class="btn btn-icon" disabled title="Next page">›</button>
+              <button class="btn btn-icon" disabled title="Last page">»</button>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+    <% end %>
+  </div>
+</div>

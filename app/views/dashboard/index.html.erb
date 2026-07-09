@@ -1,0 +1,68 @@
+<header class="site-header">
+  <div class="container">
+    <div class="brand">
+      <span class="icon" aria-hidden="true">🎙️</span>
+      <span>Anava Recordings Dashboard</span>
+    </div>
+    <div class="header-controls">
+      <% if @models.any? %>
+        <div class="group" style="display:flex;align-items:center;gap:.5rem;">
+          <span aria-hidden="true">👤</span>
+          <select class="select" data-nav="model" aria-label="Select a model">
+            <% @models.each do |model| %>
+              <option value="<%= model %>" <%= "selected" if model == @selected_model %>><%= model %></option>
+            <% end %>
+          </select>
+        </div>
+      <% end %>
+      <div class="health">
+        <span class="health-dot" aria-hidden="true"></span>
+        <span>API <span class="health-label">checking…</span></span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="container">
+  <% if @selected_model.nil? %>
+    <div class="card">
+      <div class="state">
+        <div class="icon" style="font-size:2rem;">🎧</div>
+        <p>No recordings found yet. Once data is posted to the API, models will appear here.</p>
+      </div>
+    </div>
+  <% else %>
+    <div class="tabs" role="tablist">
+      <button type="button" class="tab-trigger" data-tab="recordings">📅 <span>Recordings</span></button>
+      <button type="button" class="tab-trigger" data-tab="analytics">📊 <span>Analytics</span></button>
+    </div>
+
+    <section class="tab-panel" data-tab="recordings" hidden>
+      <%= render "recordings" %>
+    </section>
+
+    <section class="tab-panel" data-tab="analytics" hidden>
+      <%= render "analytics" %>
+    </section>
+
+    <%# Data consumed by dashboard.js (modal + charts). %>
+    <script type="application/json" id="recordings-json"><%= embed_json(@recordings_for_json.index_by(&:id).transform_values(&:as_json)) %></script>
+    <script type="application/json" id="analytics-json"><%= embed_json(
+      {
+        dailySummary: @analytics[:weekly][:dailySummary].map do |day|
+          {
+            label: (Date.parse(day[:date].to_s).strftime("%b %-d") rescue day[:date]),
+            count: day[:count],
+            durationMinutes: (day[:totalDuration].to_i / 60)
+          }
+        end,
+        slotData: @analytics[:monthly][:stats][:recordingsBySlot].map do |slot_id, count|
+          { name: slot_name(slot_id.to_i), value: count }
+        end,
+        activityTypeData: @analytics[:monthly][:stats][:recordingsByType].map do |type, count|
+          { name: type, value: count }
+        end
+      }
+    ) %></script>
+  <% end %>
+</main>

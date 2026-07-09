@@ -5,9 +5,11 @@ source 'https://rubygems.org'
 ruby '>= 3.2'
 
 # Light Rails setup: Action Pack (routing + controllers), Railties, and
-# Active Record for the Postgres data layer. No Action View, no asset
+# Active Record for the Postgres data layer, plus Action View for the
+# server-rendered dashboard (see DashboardController / app/views). No asset
 # pipeline, no Action Mailer/Cable/Storage.
 gem 'actionpack', '~> 8.0'
+gem 'actionview', '~> 8.0'
 gem 'activerecord', '~> 8.0'
 gem 'activesupport', '~> 8.0'
 gem 'railties', '~> 8.0'

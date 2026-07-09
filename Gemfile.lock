@@ -220,6 +220,7 @@ PLATFORMS
 
 DEPENDENCIES
   actionpack (~> 8.0)
+  actionview (~> 8.0)
   activerecord (~> 8.0)
   activesupport (~> 8.0)
   factory_bot_rails (~> 6.0)

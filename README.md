@@ -1,12 +1,17 @@
-# Anava API — Ruby on Rails (light/API-only)
+# Anava API — Ruby on Rails
 
 A standalone Ruby clone of the Supabase edge function in `supabase/functions/anava/index.ts`.
-It exposes the same endpoints and response shapes, backed by plain Postgres instead of Supabase.
+It exposes the same JSON endpoints and response shapes, backed by plain Postgres instead of
+Supabase, **and** it serves its own web dashboard at `/` — a native Rails/ERB reimplementation of
+the `anava-web` React app (which is now just a visual reference, not a build dependency). So this
+one app is a self-contained replacement for Supabase + a separately hosted frontend.
 
-This is a **light** Rails app: `config.api_only = true`, and only Action Pack (routing +
-controllers), Active Record, and Railties are loaded — no Action View, no asset pipeline, no
-Action Mailer/Cable/Storage. Data access is through Active Record (`app/models/recording.rb`); see
-"Database schema" below for how that lines up with `db/init.sql`.
+Still a **light** Rails app: `config.api_only = true`, and only Action Pack (routing + controllers),
+Active Record, and Action View are loaded — no asset pipeline, no Action Mailer/Cable/Storage. The
+JSON controllers inherit from `ActionController::API`; the single HTML controller
+(`DashboardController`) inherits from `ActionController::Base` and renders ERB. Data access is
+through Active Record (`app/models/recording.rb`); see "Database schema" below for how that lines up
+with `db/init.sql`.
 
 ## Run with Docker Compose
 
@@ -15,8 +20,31 @@ cd anava-ruby
 docker compose up --build
 ```
 
-- API: http://localhost:8085/health (published via `docker-compose.override.yml`, local dev only)
+- Dashboard + API: http://localhost:8085 (published via `docker-compose.override.yml`, local dev only)
 - Postgres: localhost:5433 (user/password/db: `anava`), schema auto-applied from `db/init.sql` on first start
+
+The dashboard and its assets are plain files checked into this repo (`app/views/`, `public/`), so
+there's no frontend build step — `docker compose up --build` just builds the Rails image.
+
+## The web dashboard
+
+`GET /` serves a server-rendered dashboard (`DashboardController` + `app/views/dashboard/`) that
+mirrors the `anava-web` React reference: a recordings browser (grouped by day, with date-range and
+per-page filters, pagination, and a detail modal showing an amplitude waveform + OpenStreetMap
+location + JSON download) and an analytics tab (summary cards + daily/slot/activity-type charts).
+
+- It reads through the same `Recording` model and `RecordingAnalytics` service the JSON API uses —
+  no HTTP round-trip to itself, no separate frontend host, no CORS.
+- Filtering/pagination/model selection are plain query parameters on `/` (server-rendered);
+  expand/collapse, tab switching, the detail modal, and the charts are handled by
+  `public/dashboard.js` (vanilla JS). Charts use the vendored `public/vendor/chart.umd.min.js`
+  ([Chart.js](https://www.chartjs.org/)). Styling is `public/dashboard.css`.
+- Those three files under `public/` are served as static assets by `ActionDispatch::Static`
+  (`config.public_file_server.enabled = true`), not via an asset pipeline — which is why the app
+  stays "light" despite now rendering HTML.
+
+The `anava-web/` directory is no longer wired into this app at all; it's kept purely as the design
+reference the dashboard was ported from.
 
 ## Deploying on Coolify
 
@@ -45,6 +73,7 @@ Same as the original API (see the root README for request/response details):
 
 | Method | Path |
 |--------|------|
+| GET | `/` (HTML dashboard — see "The web dashboard" above) |
 | GET | `/health` |
 | GET | `/api/v1/statistics?userId=` |
 | POST | `/api/v1/recordings` |
@@ -75,14 +104,20 @@ HTTP by this app; `file_path` is just a string reference.
 ## Project layout
 
 ```
-app/models/recording.rb            # Active Record model + query-filter scope helper
+app/models/recording.rb             # Active Record model + query-filter scope helper
 app/services/recording_analytics.rb # analytics/ranking/stats logic built on top of Recording
 app/services/audio_file_storage.rb  # validates + saves uploaded WAV files (see above)
-app/controllers/                    # one controller per resource (health, statistics, device_models, recordings)
+app/controllers/                    # JSON API controllers (health, statistics, device_models, recordings)
+app/controllers/dashboard_controller.rb # the HTML dashboard at / (see "The web dashboard")
+app/views/dashboard/                # dashboard ERB templates (index + recordings/analytics partials)
+app/views/layouts/dashboard.html.erb # dashboard layout (loads dashboard.css/js + the modal markup)
+app/helpers/dashboard_helper.rb     # view helpers: slot names, duration/time/date formatting
+public/dashboard.css, dashboard.js  # dashboard styles + behaviour (served statically)
+public/vendor/chart.umd.min.js      # vendored Chart.js (analytics + amplitude charts)
 config/database.yml                 # Active Record connection config, reads DATABASE_URL
 config/initializers/cors.rb         # rack-cors, mirrors the old before-filter CORS headers
 config/initializers/rswag_*.rb      # mounts /api-docs (see "API documentation" below)
-config/routes.rb                    # maps /api/v1/* paths to controllers
+config/routes.rb                    # root -> dashboard, plus the /api/v1/* API routes
 db/init.sql                         # what actually provisions dev/production Postgres (see below)
 db/migrate/, db/schema.rb           # standard Active Record migrations (see "Database schema" below)
 swagger/v1/swagger.yaml             # generated OpenAPI doc, checked in (see "API documentation")

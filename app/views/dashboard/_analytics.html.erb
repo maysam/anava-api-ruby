@@ -1,0 +1,110 @@
+<%
+  daily = @analytics[:daily][:stats]
+  weekly = @analytics[:weekly][:stats]
+  monthly = @analytics[:monthly][:stats]
+  has_slots = monthly[:recordingsBySlot].present?
+  has_types = monthly[:recordingsByType].present?
+  most_active = monthly[:recordingsByType].max_by { |_type, count| count }&.first || "N/A"
+%>
+
+<div class="grid grid-3">
+  <div class="card stat-card">
+    <div class="card-header">
+      <h3 class="card-title sm">Today's Recordings</h3>
+      <span class="muted-icon" aria-hidden="true">📅</span>
+    </div>
+    <div class="card-content">
+      <div class="stat-value"><%= daily[:totalRecordings] %></div>
+      <p class="stat-sub"><%= format_duration_long(daily[:totalDuration]) %> total duration</p>
+    </div>
+  </div>
+
+  <div class="card stat-card">
+    <div class="card-header">
+      <h3 class="card-title sm">Last 7 Days</h3>
+      <span class="muted-icon" aria-hidden="true">📈</span>
+    </div>
+    <div class="card-content">
+      <div class="stat-value"><%= weekly[:totalRecordings] %></div>
+      <p class="stat-sub">Avg <%= format_duration_long(weekly[:averageDuration]) %> per recording</p>
+    </div>
+  </div>
+
+  <div class="card stat-card">
+    <div class="card-header">
+      <h3 class="card-title sm">Last 30 Days</h3>
+      <span class="muted-icon" aria-hidden="true">📊</span>
+    </div>
+    <div class="card-content">
+      <div class="stat-value"><%= monthly[:totalRecordings] %></div>
+      <p class="stat-sub"><%= format_duration_long(monthly[:totalDuration]) %> total duration</p>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <h3 class="card-title">Daily Activity (Last 7 Days)</h3>
+    <p class="card-description">Number of recordings and total duration per day</p>
+  </div>
+  <div class="card-content">
+    <div class="chart-wrap" style="height:300px;"><canvas id="daily-chart"></canvas></div>
+  </div>
+</div>
+
+<div class="grid grid-2">
+  <div class="card">
+    <div class="card-header">
+      <h3 class="card-title">Activity Types (Last 30 Days)</h3>
+      <p class="card-description">Distribution of recordings by activity type</p>
+    </div>
+    <div class="card-content">
+      <% if has_types %>
+        <div class="chart-wrap" style="height:300px;"><canvas id="type-chart"></canvas></div>
+      <% else %>
+        <div class="state"><div class="icon" style="font-size:1.5rem;">📈</div><p>No activity data available</p></div>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <h3 class="card-title">Time Slots (Last 30 Days)</h3>
+      <p class="card-description">Distribution of recordings by time slot</p>
+    </div>
+    <div class="card-content">
+      <% if has_slots %>
+        <div class="chart-wrap" style="height:300px;"><canvas id="slot-chart"></canvas></div>
+      <% else %>
+        <div class="state"><div class="icon" style="font-size:1.5rem;">🕒</div><p>No slot data available</p></div>
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <h3 class="card-title">Detailed Statistics</h3>
+    <p class="card-description">Comprehensive breakdown of recording metrics</p>
+  </div>
+  <div class="card-content">
+    <div class="grid grid-4">
+      <div class="stat-block">
+        <p class="stat-label">Avg Daily</p>
+        <p class="stat-num"><%= (weekly[:totalRecordings] / 7) %></p>
+      </div>
+      <div class="stat-block">
+        <p class="stat-label">Avg Duration</p>
+        <p class="stat-num"><%= format_duration_long(monthly[:averageDuration]) %></p>
+      </div>
+      <div class="stat-block">
+        <p class="stat-label">Total Time (30d)</p>
+        <p class="stat-num"><%= format_duration_long(monthly[:totalDuration]) %></p>
+      </div>
+      <div class="stat-block">
+        <p class="stat-label">Most Active</p>
+        <p class="stat-num"><%= most_active %></p>
+      </div>
+    </div>
+  </div>
+</div>
