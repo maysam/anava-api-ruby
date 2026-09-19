@@ -15,7 +15,7 @@ gem 'activesupport', '~> 8.0'
 gem 'railties', '~> 8.0'
 
 gem 'pg', '~> 1.5'
-gem 'puma', '~> 6.4'
+gem 'puma', '~> 8.0'
 gem 'rack-cors', '~> 2.0'
 
 # Serves the generated OpenAPI doc + Swagger UI at /api-docs (see
@@ -37,3 +37,5 @@ group :test do
   # functions) isn't portable anyway. See db/schema.rb.
   gem 'sqlite3', '~> 2.0'
 end
+
+gem 'json', '~> 2.0'

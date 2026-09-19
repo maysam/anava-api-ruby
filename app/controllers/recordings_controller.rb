@@ -25,6 +25,10 @@ class RecordingsController < ApplicationController
   # POST /recordings
   # Accepts either a JSON body, or multipart/form-data with the same fields
   # plus a "file" part holding the recording's WAV audio.
+  #
+  # Idempotent: a repeated POST for the same user_id/slot_id/start_timestamp/
+  # end_timestamp updates that recording in place instead of creating a
+  # duplicate, so retried requests (e.g. after a dropped response) are safe.
   def create
     attributes = recording_attributes
     attributes['model'] = request.headers['X-Device-Model'] || 'no model'
@@ -35,7 +39,7 @@ class RecordingsController < ApplicationController
     )
     attributes['file_path'] = AudioFileStorage.save(params[:file]) if params[:file].present?
 
-    recording = Recording.create!(attributes)
+    recording = Recording.create_or_update_idempotently(attributes)
     recording_date = begin
       Date.parse(attributes['date'].to_s)
     rescue ArgumentError, TypeError

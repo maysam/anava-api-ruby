@@ -90,6 +90,11 @@ Same as the original API (see the root README for request/response details):
 Full request/response detail (parameters, schemas, examples) is in the generated OpenAPI doc — see
 "API documentation" below.
 
+`POST /api/v1/recordings` is idempotent: a repeated post with the same `user_id`, `slot_id`,
+`start_timestamp`, and `end_timestamp` updates that existing recording in place instead of creating
+a duplicate row, so a client retrying a request (e.g. after a dropped response) is safe. See
+`Recording.create_or_update_idempotently` in `app/models/recording.rb`.
+
 ## Uploading a WAV file
 
 `POST /api/v1/recordings` and `PUT /api/v1/recordings/:id` also accept `multipart/form-data`
