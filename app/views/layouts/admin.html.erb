@@ -4,11 +4,19 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Anava Recordings Dashboard</title>
-    <link rel="stylesheet" href="/dashboard.css">
-    <script src="/vendor/chart.umd.min.js" defer></script>
-    <script src="/dashboard.js" defer></script>
+    <link rel="stylesheet" href="/admin/dashboard.css">
+    <script src="/admin/vendor/chart.umd.min.js" defer></script>
+    <script src="/admin/dashboard.js" defer></script>
   </head>
   <body>
+    <% unless admin_authentication_configured? %>
+      <div class="admin-warning" role="status">
+        This admin dashboard is <strong>unprotected</strong>. Set
+        <code>ANAVA_ADMIN_PASSWORD</code> (and optionally
+        <code>ANAVA_ADMIN_USERNAME</code>) to require HTTP Basic auth.
+      </div>
+    <% end %>
+
     <%= yield %>
 
     <%# Recording detail modal — populated client-side by dashboard.js %>

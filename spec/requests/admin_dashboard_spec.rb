@@ -2,9 +2,9 @@
 
 require 'rails_helper'
 
-RSpec.describe 'GET / (dashboard)', type: :request do
+RSpec.describe 'GET /admin (dashboard)', type: :request do
   it 'renders the empty state when there are no recordings' do
-    get '/'
+    get '/admin'
 
     expect(response).to have_http_status(:ok)
     expect(response.content_type).to start_with('text/html')
@@ -16,7 +16,7 @@ RSpec.describe 'GET / (dashboard)', type: :request do
     create(:recording, model: 'Pixel-7', date: Date.current, slot_id: 1, duration: 65, percentage: 80)
     create(:recording, model: 'iPhone-14', date: Date.current)
 
-    get '/', params: { model: 'Pixel-7' }
+    get '/admin', params: { model: 'Pixel-7' }
 
     expect(response).to have_http_status(:ok)
     # Model selector lists both models, Pixel-7 selected
@@ -32,7 +32,7 @@ RSpec.describe 'GET / (dashboard)', type: :request do
   it 'defaults to the analytics tab and embeds chart data when requested' do
     create(:recording, model: 'Pixel-7', date: Date.current)
 
-    get '/', params: { model: 'Pixel-7', tab: 'analytics' }
+    get '/admin', params: { model: 'Pixel-7', tab: 'analytics' }
 
     expect(response).to have_http_status(:ok)
     expect(response.body).to include('id="analytics-json"')
@@ -43,7 +43,7 @@ RSpec.describe 'GET / (dashboard)', type: :request do
   it 'escapes attacker-controlled values embedded in the recordings JSON' do
     create(:recording, model: 'Pixel-7', user_id: '</script><script>alert(1)</script>')
 
-    get '/', params: { model: 'Pixel-7' }
+    get '/admin', params: { model: 'Pixel-7' }
 
     expect(response).to have_http_status(:ok)
     # The literal closing-script sequence must not appear unescaped inside the
@@ -54,7 +54,7 @@ RSpec.describe 'GET / (dashboard)', type: :request do
   it 'paginates and clamps an out-of-range page to the last page' do
     create_list(:recording, 3, model: 'Pixel-7', date: Date.current)
 
-    get '/', params: { model: 'Pixel-7', per_page: 10, page: 99 }
+    get '/admin', params: { model: 'Pixel-7', per_page: 10, page: 99 }
 
     expect(response).to have_http_status(:ok)
     # 3 records / 10 per page = 1 page, so no pagination controls are shown

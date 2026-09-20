@@ -45,6 +45,76 @@ paths:
                   timestamp:
                     type: string
                     format: date-time
+  "/api/v1/panel/magic-link":
+    post:
+      summary: issue a one-time link to the device's own web panel
+      tags:
+      - Panel
+      description: |
+        Returns a single-use URL that signs the requesting device into its
+        personal web panel. The device's anonymous user_id never appears in the
+        URL: the link carries a random token, which is spent on first use and
+        exchanged for a session cookie. Tokens expire after 15 minutes.
+
+        Rate-limited to 5 issuances per user_id per 5-minute window (429 once
+        exceeded), so a caller who only knows a device's user_id can't spam
+        this endpoint to evict that device's own live link.
+      parameters: []
+      responses:
+        '200':
+          description: successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: object
+                    properties:
+                      url:
+                        type: string
+                        description: Open this in a browser to enter the panel
+                      expiresAt:
+                        type: string
+                        format: date-time
+                      expiresInSeconds:
+                        type: integer
+        '400':
+          description: user_id missing
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  error:
+                    type: string
+        '429':
+          description: too many requests for this device
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  error:
+                    type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - user_id
+              properties:
+                user_id:
+                  type: string
+                  description: The device's anonymous id (userId is also accepted)
+        required: true
   "/api/v1/recordings":
     get:
       summary: list recordings

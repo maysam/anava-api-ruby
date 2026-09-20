@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Anava Screenshot 1</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+            font-family: 'Roboto', sans-serif;
+        }
+        .phone-mockup {
+            width: 300px;
+            height: 600px;
+            background-color: #fff;
+            border-radius: 30px;
+            margin: 20px auto;
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            position: relative;
+        }
+        .status-bar {
+            height: 30px;
+            background-color: #4285F4;
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 15px;
+            color: white;
+        }
+        .app-content {
+            padding: 15px;
+        }
+        .app-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .app-logo {
+            width: 40px;
+            height: 40px;
+            background-color: #4285F4;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        .app-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #4285F4;
+        }
+        .record-button {
+            width: 80px;
+            height: 80px;
+            background-color: #673AB7;
+            border-radius: 50%;
+            margin: 30px auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 5px 15px rgba(103, 58, 183, 0.3);
+        }
+        .record-icon {
+            width: 30px;
+            height: 30px;
+            background-color: white;
+            border-radius: 50%;
+        }
+        .waveform {
+            height: 100px;
+            background: linear-gradient(to bottom, #4285F4, #34A853);
+            border-radius: 10px;
+            margin: 20px 0;
+            position: relative;
+            overflow: hidden;
+        }
+        .waveform::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none"><path d="M0,0 C150,40 350,0 500,30 C650,60 700,0 900,20 C1050,40 1200,10 1200,10 L1200,120 L0,120 Z" opacity="0.2" fill="white"/></svg>');
+            background-size: cover;
+        }
+        .prayer-list {
+            margin-top: 30px;
+        }
+        .prayer-item {
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .prayer-date {
+            font-size: 14px;
+            color: #666;
+        }
+        .prayer-duration {
+            font-size: 12px;
+            color: #999;
+        }
+        .play-button {
+            width: 30px;
+            height: 30px;
+            background-color: #4285F4;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .play-icon {
+            width: 0;
+            height: 0;
+            border-style: solid;
+            border-width: 7px 0 7px 12px;
+            border-color: transparent transparent transparent white;
+            margin-left: 2px;
+        }
+    </style>
+</head>
+<body>
+    <div class="phone-mockup">
+        <div class="status-bar">
+            <span>9:41</span>
+            <span>Anava</span>
+        </div>
+        <div class="app-content">
+            <div class="app-header">
+                <div class="app-logo"></div>
+                <div class="app-title">Anava</div>
+            </div>
+            
+            <div class="record-button">
+                <div class="record-icon"></div>
+            </div>
+            
+            <div class="waveform"></div>
+            
+            <div class="prayer-list">
+                <div class="prayer-item">
+                    <div>
+                        <div>Morning Prayer</div>
+                        <div class="prayer-date">Today, 6:30 AM</div>
+                    </div>
+                    <div class="play-button">
+                        <div class="play-icon"></div>
+                    </div>
+                </div>
+                
+                <div class="prayer-item">
+                    <div>
+                        <div>Evening Prayer</div>
+                        <div class="prayer-date">Yesterday, 8:15 PM</div>
+                    </div>
+                    <div class="play-button">
+                        <div class="play-icon"></div>
+                    </div>
+                </div>
+                
+                <div class="prayer-item">
+                    <div>
+                        <div>Gratitude Prayer</div>
+                        <div class="prayer-date">May 1, 12:00 PM</div>
+                    </div>
+                    <div class="play-button">
+                        <div class="play-icon"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

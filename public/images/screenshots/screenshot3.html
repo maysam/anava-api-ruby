@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Anava Screenshot 3</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+            font-family: 'Roboto', sans-serif;
+        }
+        .phone-mockup {
+            width: 300px;
+            height: 600px;
+            background-color: #fff;
+            border-radius: 30px;
+            margin: 20px auto;
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            position: relative;
+        }
+        .status-bar {
+            height: 30px;
+            background-color: #4285F4;
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 15px;
+            color: white;
+        }
+        .app-content {
+            padding: 15px;
+        }
+        .app-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .app-logo {
+            width: 40px;
+            height: 40px;
+            background-color: #4285F4;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        .app-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #4285F4;
+        }
+        .calendar-view {
+            margin-top: 20px;
+        }
+        .month-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .month-title {
+            font-size: 20px;
+            font-weight: bold;
+        }
+        .month-nav {
+            display: flex;
+        }
+        .month-nav-button {
+            width: 30px;
+            height: 30px;
+            background-color: #f0f0f0;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 5px;
+        }
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 8px;
+        }
+        .weekday-header {
+            text-align: center;
+            font-size: 12px;
+            color: #999;
+            margin-bottom: 10px;
+        }
+        .calendar-day {
+            aspect-ratio: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 50%;
+            font-size: 14px;
+            position: relative;
+        }
+        .calendar-day.current {
+            background-color: #4285F4;
+            color: white;
+        }
+        .calendar-day.has-prayer::after {
+            content: "";
+            position: absolute;
+            bottom: 2px;
+            width: 4px;
+            height: 4px;
+            background-color: #673AB7;
+            border-radius: 50%;
+        }
+        .prayer-summary {
+            margin-top: 30px;
+        }
+        .summary-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        .summary-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        .stat-card {
+            background-color: #f9f9f9;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+        }
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #4285F4;
+            margin-bottom: 5px;
+        }
+        .stat-label {
+            font-size: 14px;
+            color: #666;
+        }
+        .recent-prayers {
+            margin-top: 30px;
+        }
+        .prayer-item {
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .prayer-date {
+            font-size: 14px;
+            color: #666;
+        }
+        .prayer-duration {
+            font-size: 12px;
+            color: #999;
+        }
+        .play-button {
+            width: 30px;
+            height: 30px;
+            background-color: #673AB7;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .play-icon {
+            width: 0;
+            height: 0;
+            border-style: solid;
+            border-width: 7px 0 7px 12px;
+            border-color: transparent transparent transparent white;
+            margin-left: 2px;
+        }
+    </style>
+</head>
+<body>
+    <div class="phone-mockup">
+        <div class="status-bar">
+            <span>9:41</span>
+            <span>Anava</span>
+        </div>
+        <div class="app-content">
+            <div class="app-header">
+                <div class="app-logo"></div>
+                <div class="app-title">Anava</div>
+            </div>
+            
+            <div class="calendar-view">
+                <div class="month-header">
+                    <div class="month-title">May 2025</div>
+                    <div class="month-nav">
+                        <div class="month-nav-button">◀</div>
+                        <div class="month-nav-button">▶</div>
+                    </div>
+                </div>
+                
+                <div class="calendar-grid">
+                    <div class="weekday-header">S</div>
+                    <div class="weekday-header">M</div>
+                    <div class="weekday-header">T</div>
+                    <div class="weekday-header">W</div>
+                    <div class="weekday-header">T</div>
+                    <div class="weekday-header">F</div>
+                    <div class="weekday-header">S</div>
+                    
+                    <div class="calendar-day">27</div>
+                    <div class="calendar-day">28</div>
+                    <div class="calendar-day">29</div>
+                    <div class="calendar-day">30</div>
+                    <div class="calendar-day has-prayer">1</div>
+                    <div class="calendar-day has-prayer">2</div>
+                    <div class="calendar-day">3</div>
+                    
+                    <div class="calendar-day">4</div>
+                    <div class="calendar-day has-prayer">5</div>
+                    <div class="calendar-day has-prayer">6</div>
+                    <div class="calendar-day has-prayer">7</div>
+                    <div class="calendar-day">8</div>
+                    <div class="calendar-day">9</div>
+                    <div class="calendar-day">10</div>
+                    
+                    <div class="calendar-day">11</div>
+                    <div class="calendar-day has-prayer">12</div>
+                    <div class="calendar-day has-prayer">13</div>
+                    <div class="calendar-day has-prayer">14</div>
+                    <div class="calendar-day">15</div>
+                    <div class="calendar-day">16</div>
+                    <div class="calendar-day">17</div>
+                    
+                    <div class="calendar-day">18</div>
+                    <div class="calendar-day has-prayer">19</div>
+                    <div class="calendar-day has-prayer">20</div>
+                    <div class="calendar-day has-prayer">21</div>
+                    <div class="calendar-day">22</div>
+                    <div class="calendar-day">23</div>
+                    <div class="calendar-day">24</div>
+                    
+                    <div class="calendar-day">25</div>
+                    <div class="calendar-day has-prayer">26</div>
+                    <div class="calendar-day has-prayer">27</div>
+                    <div class="calendar-day has-prayer">28</div>
+                    <div class="calendar-day">29</div>
+                    <div class="calendar-day">30</div>
+                    <div class="calendar-day">31</div>
+                </div>
+            </div>
+            
+            <div class="prayer-summary">
+                <div class="summary-title">May Summary</div>
+                <div class="summary-stats">
+                    <div class="stat-card">
+                        <div class="stat-value">15</div>
+                        <div class="stat-label">Total Prayers</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">45:20</div>
+                        <div class="stat-label">Prayer Time</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">12</div>
+                        <div class="stat-label">Days Prayed</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">3</div>
+                        <div class="stat-label">Favorites</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

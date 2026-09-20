@@ -1,0 +1,152 @@
+<% summary = @overview[:summary] %>
+
+<header class="panel-header">
+  <div class="container">
+    <div class="brand">
+      <img src="/images/logo.png" alt="" width="36" height="36">
+      <div>
+        <span class="wordmark">Anava</span>
+        <span class="subtitle">Your personal panel</span>
+      </div>
+    </div>
+    <div class="header-controls">
+      <span class="device-id" title="The anonymous id this device syncs under">
+        device <%= @user_id.first(8) %>…
+      </span>
+      <a class="btn btn-quiet" href="<%= panel_sign_out_path %>">Sign out</a>
+    </div>
+  </div>
+</header>
+
+<main class="container">
+  <% if summary[:totalRecordings].zero? %>
+    <section class="card empty-state">
+      <div class="empty-icon" aria-hidden="true">🕊️</div>
+      <h1>Nothing recorded yet</h1>
+      <p>
+        Once you complete a prayer session in the Anava app and it syncs, your
+        history, streaks and rankings will show up here.
+      </p>
+    </section>
+  <% else %>
+    <section class="stat-grid">
+      <div class="card stat">
+        <span class="stat-label">Sessions</span>
+        <span class="stat-value"><%= summary[:totalRecordings] %></span>
+        <span class="stat-note"><%= @overview[:activeDays] %> active <%= 'day'.pluralize(@overview[:activeDays]) %></span>
+      </div>
+      <div class="card stat">
+        <span class="stat-label">Current streak</span>
+        <span class="stat-value"><%= @overview[:currentStreak] %></span>
+        <span class="stat-note">best <%= @overview[:longestStreak] %> <%= 'day'.pluralize(@overview[:longestStreak]) %></span>
+      </div>
+      <div class="card stat">
+        <span class="stat-label">Average score</span>
+        <span class="stat-value"><%= summary[:averagePercentage] %>%</span>
+        <span class="stat-note"><%= format_duration_short(summary[:averageDuration]) %> average length</span>
+      </div>
+      <div class="card stat">
+        <span class="stat-label">Time in prayer</span>
+        <span class="stat-value"><%= format_duration_long(summary[:totalDuration]) %></span>
+        <span class="stat-note">since <%= @overview[:firstRecordedOn]&.strftime('%b %-d, %Y') || '—' %></span>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="section-label"><span>Where you rank</span></div>
+      <div class="rank-grid">
+        <div class="rank">
+          <span class="rank-value"><%= summary[:rankingToday].zero? ? '—' : "##{summary[:rankingToday]}" %></span>
+          <span class="rank-label">today</span>
+        </div>
+        <div class="rank">
+          <span class="rank-value"><%= summary[:rankingLastWeek].zero? ? '—' : "##{summary[:rankingLastWeek]}" %></span>
+          <span class="rank-label">last 7 days</span>
+        </div>
+        <div class="rank">
+          <span class="rank-value"><%= summary[:rankingLastMonth].zero? ? '—' : "##{summary[:rankingLastMonth]}" %></span>
+          <span class="rank-label">last 30 days</span>
+        </div>
+        <div class="rank">
+          <span class="rank-value"><%= summary[:total] %></span>
+          <span class="rank-label">people praying</span>
+        </div>
+      </div>
+      <p class="hint">
+        Ranking compares your average score with everyone else's over the same
+        period. A “—” just means there was nothing to compare in that window.
+      </p>
+    </section>
+
+    <section class="card">
+      <div class="section-label"><span>Last 30 days</span></div>
+      <div class="chart-wrap"><canvas id="daily-activity-canvas"></canvas></div>
+    </section>
+
+    <% if @overview[:slotBreakdown].any? %>
+      <section class="card">
+        <div class="section-label"><span>By prayer</span></div>
+        <table class="slot-table">
+          <thead>
+            <tr>
+              <th scope="col">Prayer</th>
+              <th scope="col">Sessions</th>
+              <th scope="col">Average score</th>
+              <th scope="col">Total time</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @overview[:slotBreakdown].each do |slot| %>
+              <tr>
+                <th scope="row">
+                  <%= slot_name(slot[:slotId]) %>
+                  <% if (tradition = tradition_name(slot[:slotId])) %>
+                    <span class="pill"><%= tradition %></span>
+                  <% end %>
+                </th>
+                <td><%= slot[:count] %></td>
+                <td><%= slot[:averagePercentage] %>%</td>
+                <td><%= format_duration_long(slot[:totalDuration]) %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </section>
+    <% end %>
+
+    <section class="card">
+      <div class="section-label"><span>Recent sessions</span></div>
+      <% @grouped_recordings.each do |date, recordings| %>
+        <div class="day-group">
+          <h2 class="day-header"><%= format_day_header(date) %></h2>
+          <ul class="recording-list">
+            <% recordings.each do |recording| %>
+              <li class="recording-row">
+                <span class="recording-slot"><%= slot_name(recording.slot_id) %></span>
+                <span class="recording-time"><%= format_time(recording.start_timestamp) %></span>
+                <span class="recording-duration"><%= format_duration_short(recording.duration) %></span>
+                <span class="recording-score"><%= recording.percentage.to_i %>%</span>
+              </li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+      <p class="hint">
+        Showing your most recent <%= PanelAnalytics::RECENT_RECORDINGS_LIMIT %>
+        sessions from the last <%= PanelAnalytics::RECENT_DAYS %> days.
+      </p>
+    </section>
+
+    <script type="application/json" id="panel-json"><%= embed_json(
+      { dailyActivity: @overview[:dailyActivity] }
+    ) %></script>
+  <% end %>
+
+  <footer class="panel-footer">
+    <p>
+      This panel only ever shows this one device's own recordings. It was opened
+      with a single-use link from the Anava app; that link is already spent.
+    </p>
+    <p><a href="/">anava.aralel.com</a> · <a href="/privacy-policy.html">Privacy policy</a></p>
+  </footer>
+</main>

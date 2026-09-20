@@ -301,3 +301,28 @@ main.container { padding-top: 2rem; padding-bottom: 3rem; }
 .modal iframe.map { width: 100%; height: 12rem; border: 1px solid var(--border); border-radius: 8px; }
 
 .icon-inline { vertical-align: -0.15em; }
+
+/* Unprotected-admin banner — rendered by layouts/admin.html.erb whenever
+   ANAVA_ADMIN_PASSWORD is unset, so an open dashboard is obvious rather than
+   silent. See Admin::BaseController. */
+.admin-warning {
+  background: #fef3c7;
+  border-bottom: 1px solid #fcd34d;
+  color: #78350f;
+  padding: 0.6rem 1rem;
+  text-align: center;
+  font-size: 0.85rem;
+}
+.admin-warning code {
+  background: rgba(120, 53, 15, 0.1);
+  border-radius: 4px;
+  padding: 0.05rem 0.3rem;
+  font-size: 0.8rem;
+}
+
+/* "Back to the public site" link in the dashboard header. */
+.site-header .site-link {
+  color: var(--muted-foreground);
+  font-size: 0.85rem;
+}
+.site-header .site-link:hover { color: var(--primary); }

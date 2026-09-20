@@ -66,4 +66,8 @@ RSpec.configure do |config|
   # config.filter_gems_from_backtrace("gem name")
 
   config.include FactoryBot::Syntax::Methods
+  # travel_to/travel_back — used by specs that need to move past a
+  # time-windowed limit (e.g. PanelMagicLink's issuance rate limit) without
+  # sleeping in real time.
+  config.include ActiveSupport::Testing::TimeHelpers
 end

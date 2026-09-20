@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anava Detector Lab</title>
+    <meta name="description" content="Load an Anava recording JSON, inspect amplitude detection over time, and edit the pair detector live.">
+
+    <link rel="icon" type="image/png" href="images/favicon.png">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="css/detector-playground.css">
+</head>
+<body>
+    <header class="lab-header">
+        <div class="container lab-nav">
+            <a href="index.html" class="lab-brand">
+                <img src="images/logo.png" alt="Anava logo">
+                <div>
+                    <span class="lab-brand-title">Anava</span>
+                    <span class="lab-brand-subtitle">Detector Lab</span>
+                </div>
+            </a>
+            <nav class="lab-links">
+                <a href="index.html">Main Site</a>
+                <a href="faq.html">FAQ</a>
+                <a href="privacy-policy.html">Privacy</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container lab-shell">
+        <section class="lab-toolbar">
+            <div class="lab-toolbar-copy">
+                <p class="panel-eyebrow">Waveform Playground</p>
+                <h1>Load a recording, play time forward, and rewrite the detector live.</h1>
+                <p class="toolbar-note">
+                    The default script below contains the full detector flow directly in the editor. Edit it and rerun to compare behavior instantly.
+                </p>
+            </div>
+            <div class="lab-toolbar-actions">
+                <button id="pick-file-button" class="primary-action" type="button">Pick JSON File</button>
+                <label class="secondary-action" for="file-input">Fallback Picker</label>
+                <input id="file-input" type="file" accept=".json,application/json" hidden>
+                <div id="drop-zone" class="drop-zone">
+                    Drop a recording JSON here
+                </div>
+            </div>
+            <div class="lab-toolbar-meta">
+                <div id="recording-meta" class="toolbar-meta-card">No file loaded yet</div>
+                <p class="drop-hint">Works with `recording-578-2.json`, `recording-579-1.json`, and `recording-580-2.json`.</p>
+            </div>
+        </section>
+
+        <section class="lab-grid">
+            <article class="panel timeline-panel">
+                <div class="panel-header">
+                    <div>
+                        <p class="panel-eyebrow">Timeline</p>
+                        <h2>Amplitude + Detection Playback</h2>
+                    </div>
+                    <div class="panel-meta">Sequential pairing view</div>
+                </div>
+
+                <div class="canvas-frame">
+                    <canvas id="waveform-canvas" width="1400" height="520"></canvas>
+                </div>
+
+                <div class="timeline-toolbar">
+                    <button id="play-toggle" class="play-toggle" type="button" disabled>Play</button>
+                    <input id="time-slider" class="time-slider" type="range" min="0" max="0" value="0" step="1" disabled>
+                    <div class="time-readout">
+                        <span id="time-current">00:00.0</span>
+                        <span>/</span>
+                        <span id="time-total">00:00.0</span>
+                    </div>
+                    <label class="speed-picker">
+                        <span>Speed</span>
+                        <select id="speed-select">
+                            <option value="1">1x</option>
+                            <option value="4">4x</option>
+                            <option value="8">8x</option>
+                            <option value="16" selected>16x</option>
+                            <option value="32">32x</option>
+                            <option value="64">64x</option>
+                        </select>
+                    </label>
+                </div>
+
+                <div class="legend">
+                    <span><i class="legend-chip legend-raw"></i> Raw amplitude</span>
+                    <span><i class="legend-chip legend-smooth"></i> Smoothed amplitude</span>
+                    <span><i class="legend-chip legend-threshold"></i> Threshold</span>
+                    <span><i class="legend-chip legend-high"></i> High points</span>
+                    <span><i class="legend-chip legend-pair"></i> Pair completion</span>
+                    <span><i class="legend-chip legend-playhead"></i> Playhead</span>
+                </div>
+            </article>
+
+            <article class="panel inspector-panel">
+                <div class="panel-header">
+                    <div>
+                        <p class="panel-eyebrow">Live State</p>
+                        <h2>Readout + Events</h2>
+                    </div>
+                </div>
+
+                <div class="stat-grid">
+                    <div class="stat-card">
+                        <span class="stat-label">High Points So Far</span>
+                        <strong id="stat-high-points">0</strong>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-label">Pairs So Far</span>
+                        <strong id="stat-pairs">0</strong>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-label">Pending High</span>
+                        <strong id="stat-pending">No</strong>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-label">Threshold</span>
+                        <strong id="stat-threshold">0.0000</strong>
+                    </div>
+                </div>
+
+                <div class="events-shell">
+                    <div class="events-header">
+                        <p class="panel-eyebrow">When It Fires</p>
+                        <h3>Detection Events</h3>
+                    </div>
+                    <ul id="event-list" class="event-list"></ul>
+                </div>
+
+                <pre id="debug-output" class="debug-output">Load a recording to inspect detector output.</pre>
+            </article>
+
+            <article class="panel editor-panel">
+                <div class="panel-header">
+                    <div>
+                        <p class="panel-eyebrow">Editable Algorithm</p>
+                        <h2>Detector Source</h2>
+                    </div>
+                    <div id="algorithm-status" class="algorithm-status neutral">Ready</div>
+                </div>
+
+                <p class="editor-hint">
+                    The editor must define a function named <code>detector(samples, helpers)</code> and return an object
+                    with <code>threshold</code>, <code>smoothed</code>, <code>acceptedHighs</code>, and <code>pairEvents</code>.
+                    The default implementation is fully inlined, mirrors the live sequential pairing flow, and does not hide the pairing logic in a helper wrapper.
+                </p>
+
+                <textarea id="algorithm-editor" spellcheck="false"></textarea>
+
+                <div class="editor-toolbar">
+                    <button id="run-detector-button" class="primary-action" type="button" disabled>Run Detector</button>
+                    <button id="reset-detector-button" class="secondary-button" type="button">Reset Algorithm</button>
+                    <label class="autorun-toggle">
+                        <input id="autorun-checkbox" type="checkbox" checked>
+                        <span>Auto-run while typing</span>
+                    </label>
+                </div>
+            </article>
+        </section>
+    </main>
+
+    <script src="js/detector-playground.js"></script>
+</body>
+</html>

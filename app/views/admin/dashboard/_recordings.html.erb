@@ -21,7 +21,7 @@
       <div class="group">
         <label class="field-label" for="per-page-select">Per page:</label>
         <select class="select" id="per-page-select" data-nav="per_page">
-          <% DashboardController::PER_PAGE_OPTIONS.each do |size| %>
+          <% Admin::DashboardController::PER_PAGE_OPTIONS.each do |size| %>
             <option value="<%= size %>" <%= "selected" if size == @per_page %>><%= size %></option>
           <% end %>
         </select>
@@ -75,7 +75,7 @@
       <% end %>
 
       <% if @total_pages > 1 %>
-        <% page_href = ->(n) { "/?" + { model: @selected_model, tab: "recordings", range: @range, per_page: @per_page, page: n }.to_query } %>
+        <% page_href = ->(n) { admin_dashboard_path + "?" + { model: @selected_model, tab: "recordings", range: @range, per_page: @per_page, page: n }.to_query } %>
         <div class="pagination">
           <span class="pages">Page <%= @page %> of <%= @total_pages %></span>
           <div class="controls">

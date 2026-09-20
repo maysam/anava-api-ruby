@@ -67,3 +67,26 @@ AS $$
   from ranked_users
   where user_id = target_user
 $$;
+
+-- Single-use, short-lived magic-link tokens that hand a device's anonymous
+-- user_id to a browser session for the personal panel (see PanelController and
+-- db/migrate/20260920120000_create_panel_magic_links.rb). Only the SHA-256
+-- digest of a token is stored, never the token itself.
+CREATE TABLE IF NOT EXISTS panel_magic_links (
+    id SERIAL PRIMARY KEY,
+    user_id VARCHAR(255) NOT NULL,
+    token_digest VARCHAR(255) NOT NULL,
+    expires_at TIMESTAMP WITH TIME ZONE NOT NULL,
+    consumed_at TIMESTAMP WITH TIME ZONE,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE UNIQUE INDEX IF NOT EXISTS idx_panel_magic_links_token_digest ON panel_magic_links(token_digest);
+CREATE INDEX IF NOT EXISTS idx_panel_magic_links_user_id ON panel_magic_links(user_id);
+CREATE INDEX IF NOT EXISTS idx_panel_magic_links_expires_at ON panel_magic_links(expires_at);
+
+DROP TRIGGER IF EXISTS update_panel_magic_links_updated_at ON panel_magic_links;
+CREATE TRIGGER update_panel_magic_links_updated_at BEFORE UPDATE
+    ON panel_magic_links FOR EACH ROW EXECUTE PROCEDURE
+    update_updated_at_column();

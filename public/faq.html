@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAQ - Anava</title>
+    <meta name="description" content="Frequently Asked Questions about Anava - Spiritual Recording App for All Belief Systems">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="images/favicon.png">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        .faq-item {
+            margin-bottom: 30px;
+            background-color: var(--white);
+            border-radius: var(--border-radius);
+            padding: 25px;
+            box-shadow: var(--box-shadow);
+        }
+        
+        .faq-question {
+            font-size: 20px;
+            font-weight: 500;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            position: relative;
+            cursor: pointer;
+            padding-right: 30px;
+        }
+        
+        .faq-question::after {
+            content: '\f107';
+            font-family: 'Font Awesome 5 Free';
+            font-weight: 900;
+            position: absolute;
+            right: 0;
+            top: 0;
+            transition: transform 0.3s ease;
+        }
+        
+        .faq-item.active .faq-question::after {
+            transform: rotate(180deg);
+        }
+        
+        .faq-answer {
+            display: none;
+            padding-top: 10px;
+        }
+        
+        .faq-item.active .faq-answer {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container nav-container">
+            <div class="logo">
+                <a href="index.html" class="logo-link">
+                    <img src="images/logo.png" alt="Anava Logo">
+                    <div class="logo-overlay">
+                        <h1>Anava</h1>
+                        <p>Make A Meek Call</p>
+                    </div>
+                </a>
+            </div>
+            <button class="nav-toggle" aria-label="Toggle Navigation">
+                ☰
+            </button>
+            <nav>
+                <ul>
+                    <li><a href="index.html#features">Features</a></li>
+                    <li><a href="index.html#screenshots">Screenshots</a></li>
+                    <li><a href="index.html#download">Download</a></li>
+                    <li><a href="index.html#contact">Contact</a></li>
+                    <li><a href="faq.html">FAQ</a></li>
+                    <li><a href="privacy-policy.html">Privacy Policy</a></li>
+                    <li><a href="impressum.html">Impressum</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- FAQ Content -->
+    <section class="legal-content">
+        <div class="container">
+            <h2>Frequently Asked Questions</h2>
+            <p>Find answers to common questions about Anava, the spiritual recording app designed for practitioners of all belief systems.</p>
+            
+            <div class="faq-container">
+                <div class="faq-item">
+                    <div class="faq-question">What is Anava?</div>
+                    <div class="faq-answer">
+                        <p>Anava is a mobile application designed to help users record and document their spiritual practices. It provides a simple and intuitive interface for capturing audio recordings of prayers, universal intentions, karmic reflections, or any form of spiritual expression, organizing them by date, and reviewing them later for personal growth. The app is designed with respect for diverse belief systems, including Abrahamic faiths, universal spirituality, and karma-based practices.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">Is Anava specific to any particular belief system?</div>
+                    <div class="faq-answer">
+                        <p>Anava is designed to be inclusive and respectful of all spiritual paths. The app supports traditional religious practices from Abrahamic faiths (Judaism, Christianity, and Islam) as well as more universal or karma-based spiritual approaches. Whether you're reciting Jewish prayers, Christian devotions, Islamic salat, speaking to the universe, or reflecting on karmic principles, Anava provides tools for recording and reflection that can be adapted to your specific spiritual practice.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">How do I record a spiritual practice?</div>
+                    <div class="faq-answer">
+                        <p>Recording your spiritual practice is simple:</p>
+                        <ol>
+                            <li>Open the Anava app</li>
+                            <li>Tap the "Record" button on the main screen</li>
+                            <li>Begin your prayer, meditation, universal intention, or karmic reflection (the app will automatically capture audio)</li>
+                            <li>Tap "Stop" when you've finished</li>
+                            <li>Add any notes or labels if desired (you can categorize by type of practice, occasion, or spiritual significance)</li>
+                            <li>Save your recording</li>
+                        </ol>
+                        <p>Your recording will be saved with the current date and time and can be accessed later from your history.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">Where are my recordings stored?</div>
+                    <div class="faq-answer">
+                        <p>All spiritual recordings are stored locally on your device. They are not automatically uploaded to any cloud service or shared with anyone. This ensures your personal spiritual practices remain private, respecting the sacred and intimate nature of your connection with the divine, universe, or karmic principles. You can manually delete recordings at any time.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">Can I set reminders for my spiritual practices?</div>
+                    <div class="faq-answer">
+                        <p>Yes, Anava includes a customizable reminder system that can be adapted to various spiritual traditions. You can set specific times for regular practices, including:</p>
+                        <ul>
+                            <li>The five daily salat times for Muslims</li>
+                            <li>Morning and evening prayers for Christians</li>
+                            <li>Shacharit, Mincha, and Ma'ariv times for Jewish users</li>
+                            <li>Meditation sessions for universal spirituality</li>
+                            <li>Alignment with celestial events</li>
+                            <li>Karmic reflection periods</li>
+                            <li>Custom times for any spiritual practice</li>
+                        </ul>
+                        <p>To set up reminders:</p>
+                        <ol>
+                            <li>Go to the "Settings" section</li>
+                            <li>Select "Practice Reminders"</li>
+                            <li>Add new reminder times or edit existing ones</li>
+                            <li>Customize notification sounds and vibration patterns if desired</li>
+                        </ol>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">Is there a limit to how long my recordings can be?</div>
+                    <div class="faq-answer">
+                        <p>Anava supports recordings of various lengths to accommodate different spiritual practices. Whether you're recording a brief daily intention, a complete salat, a lengthy Shabbat service, a guided meditation, a conversation with the universe, or an extended karmic reflection, the practical limit depends on your device's available storage space. For most modern devices, you can record sessions lasting from a few seconds to several hours without issues.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">Can I share my recordings with others?</div>
+                    <div class="faq-answer">
+                        <p>Yes, you can share individual recordings if you wish. From the recording details screen, tap the "Share" button to export your recording as an audio file that can be sent via email, messaging apps, or other sharing methods. This feature is completely optional, and by default, all recordings remain private. This can be useful for sharing with family members, your spiritual community, mentors, or fellow practitioners on similar paths.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">Does Anava work offline?</div>
+                    <div class="faq-answer">
+                        <p>Yes, Anava is designed to work fully offline. You don't need an internet connection to record, save, or listen to your spiritual practices. This makes it convenient to use anywhere, including places with limited connectivity, during travel, in places of worship, or in natural settings where you might connect with the universe but have limited internet access.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">How can I back up my recordings?</div>
+                    <div class="faq-answer">
+                        <p>Anava allows you to create backups of your spiritual recordings to prevent data loss. To back up your content:</p>
+                        <ol>
+                            <li>Go to "Settings"</li>
+                            <li>Select "Backup & Restore"</li>
+                            <li>Tap "Create Backup"</li>
+                            <li>Choose a location to save the backup file (local storage or cloud service)</li>
+                        </ol>
+                        <p>You can restore your recordings from a backup file using the "Restore" option in the same menu. Regular backups are recommended, especially before significant spiritual events, celestial alignments, or personal milestones when you might record more frequently.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">Is Anava free to use?</div>
+                    <div class="faq-answer">
+                        <p>Anava offers both free and premium versions:</p>
+                        <ul>
+                            <li><strong>Free Version:</strong> Includes basic recording features, history, and limited reminders.</li>
+                            <li><strong>Premium Version:</strong> Unlocks additional features such as unlimited reminders, advanced audio quality, waveform visualization, categorization options for different types of spiritual practices and belief systems, and removes advertisements.</li>
+                        </ul>
+                        <p>The premium version is available through a one-time purchase or subscription, depending on your preference.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">How do I contact support if I have issues or suggestions?</div>
+                    <div class="faq-answer">
+                        <p>We welcome your feedback and are here to help with any issues. You can contact our support team through:</p>
+                        <ul>
+                            <li>The <a href="index.html#contact">contact form</a> on our website</li>
+                            <li>Email at support@codehospital.com</li>
+                            <li>In-app support (tap "Help & Support" in the app settings)</li>
+                        </ul>
+                        <p>We typically respond to all inquiries within 24-48 hours. We value input from all spiritual communities and individual practitioners to help us improve Anava for everyone.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">Can I use Anava for non-religious spiritual practices?</div>
+                    <div class="faq-answer">
+                        <p>Absolutely! Anava is designed to support all forms of spiritual expression, whether they're tied to organized religion or not. Many users utilize Anava for:</p>
+                        <ul>
+                            <li>Recording conversations with the universe</li>
+                            <li>Documenting karmic reflections and insights</li>
+                            <li>Capturing meditation sessions</li>
+                            <li>Recording affirmations and intentions</li>
+                            <li>Tracking spiritual growth through various practices</li>
+                            <li>Documenting insights during nature connection</li>
+                        </ul>
+                        <p>The app's flexible design allows you to customize categories and labels to match your unique spiritual path, whatever form it may take.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h4>Anava</h4>
+                    <p>A respectful spiritual recording app that helps you document and reflect on your journey, designed for practitioners of all faiths and belief systems, including those who connect with the universe or follow karmic principles.</p>
+                </div>
+                <div class="footer-column">
+                    <h4>Links</h4>
+                    <ul>
+                        <li><a href="index.html#features">Features</a></li>
+                        <li><a href="index.html#screenshots">Screenshots</a></li>
+                        <li><a href="index.html#download">Download</a></li>
+                        <li><a href="index.html#contact">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Legal</h4>
+                    <ul>
+                        <li><a href="privacy-policy.html">Privacy Policy</a></li>
+                        <li><a href="terms-of-service.html">Terms of Service</a></li>
+                        <li><a href="impressum.html">Impressum</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Connect</h4>
+                    <div class="social-links">
+                        <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2025 Anava - CodeHospital. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // FAQ accordion functionality
+            const faqQuestions = document.querySelectorAll('.faq-question');
+            
+            faqQuestions.forEach(question => {
+                question.addEventListener('click', function() {
+                    const faqItem = this.parentElement;
+                    faqItem.classList.toggle('active');
+                });
+            });
+            
+            // Open the first FAQ item by default
+            if (faqQuestions.length > 0) {
+                faqQuestions[0].parentElement.classList.add('active');
+            }
+        });
+    </script>
+</body>
+</html>

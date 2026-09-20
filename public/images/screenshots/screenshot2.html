@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Anava Screenshot 2</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+            font-family: 'Roboto', sans-serif;
+        }
+        .phone-mockup {
+            width: 300px;
+            height: 600px;
+            background-color: #fff;
+            border-radius: 30px;
+            margin: 20px auto;
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            position: relative;
+        }
+        .status-bar {
+            height: 30px;
+            background-color: #4285F4;
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 15px;
+            color: white;
+        }
+        .app-content {
+            padding: 15px;
+        }
+        .app-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .app-logo {
+            width: 40px;
+            height: 40px;
+            background-color: #4285F4;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        .app-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #4285F4;
+        }
+        .prayer-detail {
+            background-color: #f9f9f9;
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .prayer-title {
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .prayer-metadata {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            color: #666;
+            font-size: 14px;
+        }
+        .waveform {
+            height: 120px;
+            background: linear-gradient(to bottom, #4285F4, #34A853);
+            border-radius: 10px;
+            margin: 20px 0;
+            position: relative;
+            overflow: hidden;
+        }
+        .waveform::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none"><path d="M0,0 C150,40 350,0 500,30 C650,60 700,0 900,20 C1050,40 1200,10 1200,10 L1200,120 L0,120 Z" opacity="0.2" fill="white"/></svg>');
+            background-size: cover;
+        }
+        .playback-controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 30px 0;
+        }
+        .play-button {
+            width: 60px;
+            height: 60px;
+            background-color: #673AB7;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 20px;
+            box-shadow: 0 5px 15px rgba(103, 58, 183, 0.3);
+        }
+        .play-icon {
+            width: 0;
+            height: 0;
+            border-style: solid;
+            border-width: 12px 0 12px 20px;
+            border-color: transparent transparent transparent white;
+            margin-left: 5px;
+        }
+        .control-button {
+            width: 40px;
+            height: 40px;
+            background-color: #f0f0f0;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .notes-section {
+            margin-top: 30px;
+        }
+        .notes-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .notes-content {
+            background-color: #f0f0f0;
+            border-radius: 10px;
+            padding: 15px;
+            font-size: 14px;
+            color: #333;
+            line-height: 1.5;
+        }
+        .action-buttons {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 30px;
+        }
+        .action-button {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .action-icon {
+            width: 50px;
+            height: 50px;
+            background-color: #f0f0f0;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .action-label {
+            font-size: 12px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="phone-mockup">
+        <div class="status-bar">
+            <span>9:41</span>
+            <span>Anava</span>
+        </div>
+        <div class="app-content">
+            <div class="app-header">
+                <div class="app-logo"></div>
+                <div class="app-title">Anava</div>
+            </div>
+            
+            <div class="prayer-detail">
+                <div class="prayer-title">Morning Prayer</div>
+                <div class="prayer-metadata">
+                    <span>May 2, 2025</span>
+                    <span>6:30 AM</span>
+                    <span>Duration: 3:45</span>
+                </div>
+                
+                <div class="waveform"></div>
+                
+                <div class="playback-controls">
+                    <div class="control-button">⏮</div>
+                    <div class="play-button">
+                        <div class="play-icon"></div>
+                    </div>
+                    <div class="control-button">⏭</div>
+                </div>
+                
+                <div class="notes-section">
+                    <div class="notes-title">Prayer Notes</div>
+                    <div class="notes-content">
+                        Today I focused on gratitude and peace. I prayed for my family and friends, and asked for guidance in the upcoming decisions I need to make.
+                    </div>
+                </div>
+                
+                <div class="action-buttons">
+                    <div class="action-button">
+                        <div class="action-icon">🔄</div>
+                        <div class="action-label">Share</div>
+                    </div>
+                    <div class="action-button">
+                        <div class="action-icon">📝</div>
+                        <div class="action-label">Edit</div>
+                    </div>
+                    <div class="action-button">
+                        <div class="action-icon">⭐</div>
+                        <div class="action-label">Favorite</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

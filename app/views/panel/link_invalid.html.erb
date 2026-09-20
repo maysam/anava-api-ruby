@@ -1,0 +1,13 @@
+<main class="container">
+  <section class="card empty-state">
+    <div class="empty-icon" aria-hidden="true">⌛</div>
+    <h1>That link has expired</h1>
+    <p>
+      Panel links can only be used once, and only within
+      <%= PanelMagicLink::TOKEN_TTL.inspect %> of being created — so a link left
+      in your browser history can't be reused by anyone else.
+    </p>
+    <p class="hint">Open the Anava app again and tap “My panel” for a fresh link.</p>
+    <p><a class="btn" href="/">Back to anava.aralel.com</a></p>
+  </section>
+</main>
