@@ -5,7 +5,7 @@ development:
   <<: *default
   adapter: postgresql
   timeout: 5000
-  url: <%= ENV.fetch("DATABASE_URL", "postgres://anava:anava@localhost:5432/anava") %>
+  url: <%= ENV.fetch("DATABASE_URL", "postgres://maysam:maysam@localhost:5432/anava") %>
 
 # SQLite instead of Postgres: no external database server needed to run the
 # suite, and db/init.sql (SERIAL, trigger functions) isn't portable to it

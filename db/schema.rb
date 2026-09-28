@@ -13,6 +13,9 @@
 # It's strongly recommended that you check this file into your version control system.
 
 ActiveRecord::Schema[8.1].define(version: 20_260_920_120_000) do
+  # These are extensions that must be enabled in order to support this database
+  enable_extension 'pg_catalog.plpgsql'
+
   create_table 'panel_magic_links', force: :cascade do |t|
     t.datetime 'consumed_at'
     t.datetime 'created_at', null: false
