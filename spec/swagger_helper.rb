@@ -54,7 +54,8 @@ RSpec.configure do |config|
               },
               duration: { type: :integer, nullable: true, description: 'Seconds; computed from timestamps if omitted' },
               percentage: { type: :integer, nullable: true },
-              file_path: { type: :string, nullable: true, description: 'Path to the recording\'s stored WAV file, if any' },
+              file_path: { type: :string, nullable: true,
+                           description: 'Path to the recording\'s stored WAV file, if any' },
               created_at: { type: :string, format: 'date-time' },
               updated_at: { type: :string, format: 'date-time' }
             }

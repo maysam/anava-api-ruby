@@ -1,22 +1,24 @@
-require "swagger_helper"
+# frozen_string_literal: true
 
-RSpec.describe "api/v1/recordings", type: :request do
-  path "/api/v1/recordings" do
-    get("list recordings") do
-      tags "Recordings"
-      produces "application/json"
+require 'swagger_helper'
+
+RSpec.describe 'api/v1/recordings', type: :request do
+  path '/api/v1/recordings' do
+    get('list recordings') do
+      tags 'Recordings'
+      produces 'application/json'
       parameter name: :userId, in: :query, type: :string, required: false
-      parameter name: :date, in: :query, type: :string, required: false, description: "Exact date filter (YYYY-MM-DD)"
+      parameter name: :date, in: :query, type: :string, required: false, description: 'Exact date filter (YYYY-MM-DD)'
       parameter name: :startDate, in: :query, type: :string, required: false
       parameter name: :endDate, in: :query, type: :string, required: false
       parameter name: :limit, in: :query, type: :integer, required: false
       parameter name: :offset, in: :query, type: :integer, required: false
 
-      response(200, "successful") do
+      response(200, 'successful') do
         schema type: :object,
                properties: {
                  success: { type: :boolean },
-                 data: { type: :array, items: { "$ref" => "#/components/schemas/Recording" } },
+                 data: { type: :array, items: { '$ref' => '#/components/schemas/Recording' } },
                  pagination: {
                    type: :object,
                    properties: {
@@ -38,18 +40,18 @@ RSpec.describe "api/v1/recordings", type: :request do
       end
     end
 
-    post("create a recording") do
-      tags "Recordings"
-      consumes "application/json"
-      produces "application/json"
+    post('create a recording') do
+      tags 'Recordings'
+      consumes 'application/json'
+      produces 'application/json'
       parameter name: :recording, in: :body, schema: {
         type: :object,
         properties: {
           user_id: { type: :string },
-          date: { type: :string, format: "date" },
+          date: { type: :string, format: 'date' },
           slot_id: { type: :integer },
-          start_timestamp: { type: :integer, format: "int64" },
-          end_timestamp: { type: :integer, format: "int64" },
+          start_timestamp: { type: :integer, format: 'int64' },
+          end_timestamp: { type: :integer, format: 'int64' },
           amplitudes_json: { type: :string },
           percentage: { type: :integer },
           longitude: { type: :number },
@@ -81,44 +83,44 @@ RSpec.describe "api/v1/recordings", type: :request do
     end
   end
 
-  path "/api/v1/recordings/{id}" do
+  path '/api/v1/recordings/{id}' do
     parameter name: :id, in: :path, type: :integer
 
-    get("show a recording") do
-      tags "Recordings"
-      produces "application/json"
+    get('show a recording') do
+      tags 'Recordings'
+      produces 'application/json'
 
-      response(200, "successful") do
+      response(200, 'successful') do
         schema type: :object,
                properties: {
                  success: { type: :boolean },
-                 data: { "$ref" => "#/components/schemas/Recording" }
+                 data: { '$ref' => '#/components/schemas/Recording' }
                }
 
         let(:id) { create(:recording).id }
         run_test!
       end
 
-      response(404, "recording not found") do
+      response(404, 'recording not found') do
         let(:id) { 0 }
         run_test!
       end
     end
 
-    put("update a recording") do
-      tags "Recordings"
-      consumes "application/json"
-      produces "application/json"
+    put('update a recording') do
+      tags 'Recordings'
+      consumes 'application/json'
+      produces 'application/json'
       parameter name: :updates, in: :body, schema: {
         type: :object,
-        description: "Any subset of the writable Recording fields; at least one is required."
+        description: 'Any subset of the writable Recording fields; at least one is required.'
       }
 
-      response(200, "recording updated") do
+      response(200, 'recording updated') do
         schema type: :object,
                properties: {
                  success: { type: :boolean },
-                 data: { "$ref" => "#/components/schemas/Recording" }
+                 data: { '$ref' => '#/components/schemas/Recording' }
                }
 
         let(:id) { create(:recording).id }
@@ -126,48 +128,48 @@ RSpec.describe "api/v1/recordings", type: :request do
         run_test!
       end
 
-      response(400, "no writable fields given") do
+      response(400, 'no writable fields given') do
         let(:id) { create(:recording).id }
         let(:updates) { {} }
         run_test!
       end
 
-      response(404, "recording not found") do
+      response(404, 'recording not found') do
         let(:id) { 0 }
         let(:updates) { { percentage: 90 } }
         run_test!
       end
     end
 
-    delete("delete a recording") do
-      tags "Recordings"
-      produces "application/json"
+    delete('delete a recording') do
+      tags 'Recordings'
+      produces 'application/json'
 
-      response(200, "recording deleted") do
+      response(200, 'recording deleted') do
         let(:id) { create(:recording).id }
         run_test!
       end
     end
   end
 
-  path "/api/v1/recordings/user/{user_id}" do
+  path '/api/v1/recordings/user/{user_id}' do
     parameter name: :user_id, in: :path, type: :string
 
     get("list a user's recordings, grouped by date") do
-      tags "Recordings"
-      produces "application/json"
+      tags 'Recordings'
+      produces 'application/json'
       parameter name: :date, in: :query, type: :string, required: false
       parameter name: :startDate, in: :query, type: :string, required: false
       parameter name: :endDate, in: :query, type: :string, required: false
       parameter name: :limit, in: :query, type: :integer, required: false
       parameter name: :offset, in: :query, type: :integer, required: false
 
-      response(200, "successful") do
+      response(200, 'successful') do
         schema type: :object,
                properties: {
                  success: { type: :boolean },
-                 data: { type: :array, items: { "$ref" => "#/components/schemas/Recording" } },
-                 groupedByDate: { type: :object, description: "Recordings keyed by ISO date string" },
+                 data: { type: :array, items: { '$ref' => '#/components/schemas/Recording' } },
+                 groupedByDate: { type: :object, description: 'Recordings keyed by ISO date string' },
                  pagination: {
                    type: :object,
                    properties: {
@@ -189,14 +191,14 @@ RSpec.describe "api/v1/recordings", type: :request do
     end
   end
 
-  path "/api/v1/recordings/analytics/{user_id}" do
+  path '/api/v1/recordings/analytics/{user_id}' do
     parameter name: :user_id, in: :path, type: :string
 
     get("get a user's daily/weekly/monthly recording analytics") do
-      tags "Recordings"
-      produces "application/json"
+      tags 'Recordings'
+      produces 'application/json'
 
-      response(200, "successful") do
+      response(200, 'successful') do
         schema type: :object,
                properties: {
                  success: { type: :boolean },
@@ -216,23 +218,23 @@ RSpec.describe "api/v1/recordings", type: :request do
     end
   end
 
-  path "/api/v1/recordings/model/{model}" do
+  path '/api/v1/recordings/model/{model}' do
     parameter name: :model, in: :path, type: :string
 
-    get("list recordings for a device model, grouped by date") do
-      tags "Recordings"
-      produces "application/json"
+    get('list recordings for a device model, grouped by date') do
+      tags 'Recordings'
+      produces 'application/json'
       parameter name: :date, in: :query, type: :string, required: false
       parameter name: :startDate, in: :query, type: :string, required: false
       parameter name: :endDate, in: :query, type: :string, required: false
       parameter name: :limit, in: :query, type: :integer, required: false
       parameter name: :offset, in: :query, type: :integer, required: false
 
-      response(200, "successful") do
+      response(200, 'successful') do
         schema type: :object,
                properties: {
                  success: { type: :boolean },
-                 data: { type: :array, items: { "$ref" => "#/components/schemas/Recording" } },
+                 data: { type: :array, items: { '$ref' => '#/components/schemas/Recording' } },
                  groupedByDate: { type: :object },
                  pagination: {
                    type: :object,
@@ -255,14 +257,14 @@ RSpec.describe "api/v1/recordings", type: :request do
     end
   end
 
-  path "/api/v1/recordings/analytics-by-model/{model}" do
+  path '/api/v1/recordings/analytics-by-model/{model}' do
     parameter name: :model, in: :path, type: :string
 
     get("get a device model's daily/weekly/monthly recording analytics") do
-      tags "Recordings"
-      produces "application/json"
+      tags 'Recordings'
+      produces 'application/json'
 
-      response(200, "successful") do
+      response(200, 'successful') do
         schema type: :object,
                properties: {
                  success: { type: :boolean },

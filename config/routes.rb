@@ -10,6 +10,14 @@ Rails.application.routes.draw do
   # Admin::BaseController for its optional HTTP Basic auth.
   get 'admin', to: 'admin/dashboard#index', as: :admin_dashboard
 
+  # Operator edit/delete of a single recording. Browser forms POST (the app is
+  # api_only, so there is no _method override); PATCH/DELETE work for scripts.
+  get 'admin/recordings/:id/edit', to: 'admin/recordings#edit', as: :edit_admin_recording
+  post 'admin/recordings/:id', to: 'admin/recordings#update', as: :admin_recording
+  patch 'admin/recordings/:id', to: 'admin/recordings#update'
+  post 'admin/recordings/:id/delete', to: 'admin/recordings#destroy', as: :delete_admin_recording
+  delete 'admin/recordings/:id', to: 'admin/recordings#destroy'
+
   # The per-device personal panel, entered through a magic link the app
   # requests for itself (see PanelLinksController / PanelMagicLink).
   get 'panel', to: 'panel#show', as: :panel

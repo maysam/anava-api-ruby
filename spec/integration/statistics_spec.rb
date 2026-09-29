@@ -1,14 +1,16 @@
-require "swagger_helper"
+# frozen_string_literal: true
 
-RSpec.describe "api/v1/statistics", type: :request do
-  path "/api/v1/statistics" do
+require 'swagger_helper'
+
+RSpec.describe 'api/v1/statistics', type: :request do
+  path '/api/v1/statistics' do
     get("get a user's statistics") do
-      tags "Statistics"
-      produces "application/json"
+      tags 'Statistics'
+      produces 'application/json'
       parameter name: :userId, in: :query, type: :string, required: false,
-                description: "User to compute statistics/ranking for"
+                description: 'User to compute statistics/ranking for'
 
-      response(200, "successful") do
+      response(200, 'successful') do
         schema type: :object,
                properties: {
                  success: { type: :boolean },

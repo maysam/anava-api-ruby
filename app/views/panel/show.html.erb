@@ -125,7 +125,7 @@
                 <span class="recording-slot"><%= slot_name(recording.slot_id) %></span>
                 <span class="recording-time"><%= format_time(recording.start_timestamp) %></span>
                 <span class="recording-duration"><%= format_duration_short(recording.duration) %></span>
-                <span class="recording-score"><%= recording.percentage.to_i %>%</span>
+                <span class="recording-score"><%= recording.activity_percentage.to_i %>%</span>
               </li>
             <% end %>
           </ul>

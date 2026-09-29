@@ -96,9 +96,10 @@ module PanelAnalytics
     end
   end
 
+  # Negative percentages count as zero (see Recording::CLAMPED_PERCENTAGE_SQL).
   def average_percentage(recordings)
     return 0 if recordings.empty?
 
-    (recordings.sum { |recording| recording.percentage.to_i }.to_f / recordings.length).round
+    (recordings.sum { |recording| recording.activity_percentage.to_i }.to_f / recordings.length).round
   end
 end

@@ -326,3 +326,57 @@ main.container { padding-top: 2rem; padding-bottom: 3rem; }
   font-size: 0.85rem;
 }
 .site-header .site-link:hover { color: var(--primary); }
+
+/* Destructive button — recording delete (modal + edit page). */
+.btn-destructive { color: var(--destructive); border-color: #fecaca; }
+.btn-destructive:hover:not(:disabled) { background: #fef2f2; }
+
+/* Recording modal actions: Edit + Delete side by side. */
+.modal-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
+.modal-actions form { margin: 0; }
+.modal-actions .btn { width: 100%; }
+
+/* Success banner after an admin edit/delete (?notice=…). */
+.admin-notice {
+  background: #dcfce7;
+  border: 1px solid #86efac;
+  color: #14532d;
+  border-radius: var(--radius);
+  padding: 0.6rem 1rem;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+}
+
+/* Admin recording edit form. */
+.form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+.form-field { display: flex; flex-direction: column; gap: 0.3rem; }
+.form-field.full { grid-column: 1 / -1; }
+.form-field .field-label { font-size: 0.85rem; color: var(--muted-foreground); }
+.form-field .field-hint { font-size: 0.78rem; color: #b45309; }
+.form-field select.select { width: 100%; }
+input.input {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.45rem 0.7rem;
+  font-size: 0.9rem;
+  color: var(--foreground);
+  background: var(--background);
+  width: 100%;
+  font-family: inherit;
+}
+input.input:focus { outline: 2px solid var(--primary); outline-offset: 1px; }
+.form-actions { display: flex; justify-content: flex-end; gap: 0.5rem; margin-top: 1.25rem; }
+.delete-form { margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--border); }
+.form-errors {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #991b1b;
+  border-radius: 8px;
+  padding: 0.6rem 1rem;
+  margin-bottom: 1rem;
+  font-size: 0.88rem;
+}
+.form-errors p, .form-errors ul { margin: 0.2rem 0; }
+@media (max-width: 600px) {
+  .form-grid { grid-template-columns: 1fr; }
+}

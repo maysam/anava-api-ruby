@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 FactoryBot.define do
   factory :recording do
     user_id { Faker::Internet.uuid }

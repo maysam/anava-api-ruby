@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Analytics/reporting logic on top of the Recording model, ported from the
 # Sinatra helpers. Pure Active Record — no raw SQL, no Postgres functions.
 module RecordingAnalytics
@@ -7,16 +9,17 @@ module RecordingAnalytics
     ((end_timestamp.to_i - start_timestamp.to_i) / 1000.0).floor
   end
 
-  # Ranks users by average `percentage` within a date range. Ties share a
+  # Ranks users by average `percentage` (negative values counted as zero)
+  # within a date range. Ties share a
   # rank and the next distinct value skips ahead (the same "competition
   # ranking" semantics as SQL's RANK() OVER (ORDER BY avg DESC)), computed
   # here in Ruby via Active Record's grouped average instead of the old
   # get_user_rank() Postgres function.
   def user_rank(start_date, end_date, target_user)
     averages_by_user = Recording.where(date: start_date..end_date)
-                                 .group(:user_id)
-                                 .average(:percentage)
-                                 .sort_by { |_user_id, average| -average }
+                                .group(:user_id)
+                                .average(Recording::CLAMPED_PERCENTAGE_SQL)
+                                .sort_by { |_user_id, average| -average }
 
     rank = 0
     previous_average = nil
@@ -36,7 +39,7 @@ module RecordingAnalytics
     scope = Recording.where(user_id: user_id)
     total_recordings = scope.count
     total_duration = scope.sum(:duration)
-    total_percentage = scope.sum(:percentage)
+    total_percentage = scope.sum(Recording::CLAMPED_PERCENTAGE_SQL)
     average_percentage = total_recordings.positive? ? (total_percentage.to_f / total_recordings).round : 0
     average_duration = total_recordings.positive? ? (total_duration.to_f / total_recordings).round : 0
 

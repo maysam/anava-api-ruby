@@ -88,4 +88,12 @@ RSpec.describe PanelAnalytics do
       expect(overview[:slotBreakdown].first).to include(slotId: 2, count: 2, averagePercentage: 75)
     end
   end
+
+  describe '.average_percentage' do
+    it 'treats negative percentages as zero' do
+      recordings = [build(:recording, percentage: 80), build(:recording, percentage: -40)]
+
+      expect(described_class.average_percentage(recordings)).to eq(40)
+    end
+  end
 end

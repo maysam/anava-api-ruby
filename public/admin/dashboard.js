@@ -170,7 +170,8 @@
     add("Duration", formatDurationShort(recording.duration));
     if (recording.start_timestamp) add("Start", formatTime(recording.start_timestamp));
     if (recording.end_timestamp) add("End", formatTime(recording.end_timestamp));
-    if (recording.percentage !== undefined && recording.percentage !== null) add("Activity %", recording.percentage + "%");
+    // The server already reports negative percentages as 0 (see Recording#as_json).
+    if (recording.percentage !== undefined && recording.percentage !== null) add("Activity %", Math.max(0, recording.percentage) + "%");
     if (recording.model) add("Model", recording.model);
     add("User ID", recording.user_id, true);
     if (recording.created_at) add("Created At", formatDateTime(recording.created_at));
@@ -253,6 +254,15 @@
       URL.revokeObjectURL(url);
     };
 
+    // Edit / delete — both return to the exact dashboard view we're on.
+    var returnTo = window.location.pathname + window.location.search;
+    var recordingPath = "/admin/recordings/" + encodeURIComponent(recording.id);
+    overlay.querySelector("[data-edit-link]").href =
+      recordingPath + "/edit?return_to=" + encodeURIComponent(returnTo);
+    var deleteForm = overlay.querySelector("[data-delete-form]");
+    deleteForm.action = recordingPath + "/delete";
+    deleteForm.querySelector("input[name=return_to]").value = returnTo;
+
     overlay.hidden = false;
   }
 
@@ -276,6 +286,17 @@
     overlay.addEventListener("click", function (e) { if (e.target === overlay) closeModal(); });
     overlay.querySelector(".modal-close").addEventListener("click", closeModal);
     document.addEventListener("keydown", function (e) { if (e.key === "Escape") closeModal(); });
+  }
+
+  // ---- Destructive-action confirmation ----------------------------------
+  // Any form with data-confirm (recording delete in the modal and on the
+  // edit page) asks before submitting.
+  function initConfirmForms() {
+    document.querySelectorAll("form[data-confirm]").forEach(function (form) {
+      form.addEventListener("submit", function (e) {
+        if (!window.confirm(form.getAttribute("data-confirm"))) e.preventDefault();
+      });
+    });
   }
 
   // ---- Analytics charts ---------------------------------------------------
@@ -358,6 +379,7 @@
     initNavSelects();
     initDayToggles();
     initModal();
+    initConfirmForms();
     // initTabs() calls showTab(), which builds the analytics charts if the
     // analytics tab is the active one on load — so run it last.
     initTabs();

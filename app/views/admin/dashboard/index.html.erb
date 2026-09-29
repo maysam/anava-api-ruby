@@ -25,6 +25,9 @@
 </header>
 
 <main class="container">
+  <% if (notice_message = Admin::RecordingsController::NOTICE_MESSAGES[params[:notice].to_s]) %>
+    <div class="admin-notice" role="status"><%= notice_message %></div>
+  <% end %>
   <% if @selected_model.nil? %>
     <div class="card">
       <div class="state">

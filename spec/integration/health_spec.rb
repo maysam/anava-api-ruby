@@ -1,17 +1,19 @@
-require "swagger_helper"
+# frozen_string_literal: true
 
-RSpec.describe "health", type: :request do
-  path "/health" do
-    get("check API health") do
-      tags "Health"
-      produces "application/json"
+require 'swagger_helper'
 
-      response(200, "API is running") do
+RSpec.describe 'health', type: :request do
+  path '/health' do
+    get('check API health') do
+      tags 'Health'
+      produces 'application/json'
+
+      response(200, 'API is running') do
         schema type: :object,
                properties: {
                  success: { type: :boolean },
                  message: { type: :string },
-                 timestamp: { type: :string, format: "date-time" }
+                 timestamp: { type: :string, format: 'date-time' }
                }
 
         run_test!

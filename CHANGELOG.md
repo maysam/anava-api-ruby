@@ -2,6 +2,47 @@
 
 ## Unreleased
 
+### Admin can edit and delete recordings; negative activity counts as zero
+
+**Edit/delete from the admin dashboard.** The recording detail modal on `/admin`
+now has **Edit** and **Delete** buttons (new `Admin::RecordingsController`).
+- `GET /admin/recordings/:id/edit` is a form for model, version, build, user ID,
+  date, slot (0–18, labelled with the slot name and tradition), duration,
+  activity %, latitude and longitude (`Recording::ADMIN_EDITABLE_COLUMNS`).
+  Timestamps and amplitudes can't be edited. The admin-only validations
+  (`save(context: :admin_edit)`) stop an operator from blanking a NOT NULL
+  column or entering an out-of-range value. When a save fails, the form shows
+  again with the errors. API write behaviour is unchanged.
+- Delete asks for confirmation. It removes the row and the recording's stored
+  WAV file, using the new `AudioFileStorage.delete`, which only removes files
+  under `storage/recordings/`.
+- Both actions redirect back to the dashboard view they came from, with a
+  green confirmation banner (`?notice=`). `return_to` must stay under `/admin`,
+  so it can't be used as an open redirect. Browser forms POST because the app
+  is `api_only`; `PATCH`/`DELETE /admin/recordings/:id` also work. Everything
+  sits behind the existing admin HTTP Basic auth.
+
+**Negative activity is treated as zero.** A negative `percentage` is now
+counted as 0 in every calculation and chart, and the stored value is not
+changed:
+- `RecordingAnalytics.user_rank` and `calculate_analytics` aggregate through
+  `Recording::CLAMPED_PERCENTAGE_SQL`. This covers the mobile app's
+  `/api/v1/statistics` average and today/week/month rankings.
+- `PanelAnalytics.average_percentage` covers the panel's daily-activity chart
+  and per-slot table.
+- `Recording#as_json` reports the clamped value in every JSON response and in
+  the admin modal. The admin list and panel list show
+  `Recording#activity_percentage`.
+- NULL stays NULL, so `AVG` still skips recordings with no score.
+
+Fix: `Admin::RecordingsController#with_notice` crashed with `NoMethodError` (500)
+after every update and delete. A RuboCop `Style/HashExcept` autocorrect had changed
+`.reject { ... }` to `.except('notice')` on the Array that `URI.decode_www_form`
+returns. The query pairs are now converted with `.to_h` before `.except`.
+
+Specs: new `spec/requests/admin_recordings_spec.rb`, plus clamping cases in the
+model, RecordingAnalytics and PanelAnalytics specs. 117 examples, 0 failures.
+
 ### Three faces on one app: website at `/`, dashboard at `/admin`, panel at `/panel`
 
 **The public website moved into the backend.** `public/` now holds the marketing

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class StatisticsController < ApplicationController
   def show
     analytics = RecordingAnalytics.calculate_analytics(params[:userId].to_s)

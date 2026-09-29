@@ -44,6 +44,16 @@
         <section>
           <button type="button" class="btn btn-block" data-download>⬇&nbsp; Download JSON</button>
         </section>
+
+        <%# Edit link + delete form; their URLs are filled per recording by dashboard.js. %>
+        <section class="modal-actions">
+          <a class="btn" data-edit-link href="#">✎&nbsp; Edit</a>
+          <form method="post" data-delete-form
+                data-confirm="Delete this recording permanently? This cannot be undone.">
+            <input type="hidden" name="return_to" value="">
+            <button type="submit" class="btn btn-destructive">🗑&nbsp; Delete</button>
+          </form>
+        </section>
       </div>
     </div>
   </body>

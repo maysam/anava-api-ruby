@@ -1,0 +1,104 @@
+<header class="site-header">
+  <div class="container">
+    <div class="brand">
+      <span class="icon" aria-hidden="true">🎙️</span>
+      <span>Edit Recording #<%= @recording.id %></span>
+    </div>
+    <div class="header-controls">
+      <a class="site-link" href="<%= @return_to %>">← Back to dashboard</a>
+    </div>
+  </div>
+</header>
+
+<main class="container">
+  <div class="card">
+    <div class="card-header">
+      <h2 class="card-title"><%= slot_name(@recording.slot_id) %> · <%= @recording.date %></h2>
+      <p class="card-description">
+        Recorded <%= format_time(@recording.start_timestamp) %>–<%= format_time(@recording.end_timestamp) %>
+        · created <%= @recording.created_at&.strftime('%Y-%m-%d %H:%M') %>
+      </p>
+    </div>
+    <div class="card-content">
+      <% if @recording.errors.any? %>
+        <div class="form-errors" role="alert">
+          <p>The recording could not be saved:</p>
+          <ul>
+            <% @recording.errors.full_messages.each do |error_message| %>
+              <li><%= error_message %></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+
+      <form class="edit-form" method="post" action="<%= admin_recording_path(@recording) %>">
+        <input type="hidden" name="return_to" value="<%= @return_to %>">
+
+        <div class="form-grid">
+          <label class="form-field">
+            <span class="field-label">Model</span>
+            <input class="input" type="text" name="recording[model]" value="<%= @recording.model %>" required>
+          </label>
+          <label class="form-field">
+            <span class="field-label">Version</span>
+            <input class="input" type="text" name="recording[version]" value="<%= @recording.version %>" required>
+          </label>
+          <label class="form-field">
+            <span class="field-label">Build</span>
+            <input class="input" type="text" name="recording[build]" value="<%= @recording.build %>" required>
+          </label>
+          <label class="form-field">
+            <span class="field-label">Date</span>
+            <input class="input" type="date" name="recording[date]" value="<%= @recording.date %>" required>
+          </label>
+          <label class="form-field">
+            <span class="field-label">Slot</span>
+            <select class="select" name="recording[slot_id]">
+              <% slot_ids = (0..18).to_a
+                 slot_ids |= [@recording.slot_id.to_i] %>
+              <% slot_ids.each do |slot_id| %>
+                <option value="<%= slot_id %>" <%= "selected" if slot_id == @recording.slot_id.to_i %>>
+                  <%= slot_id %> — <%= slot_name(slot_id) %><%= " (#{tradition_name(slot_id)})" if tradition_name(slot_id) %>
+                </option>
+              <% end %>
+            </select>
+          </label>
+          <label class="form-field">
+            <span class="field-label">Duration (seconds)</span>
+            <input class="input" type="number" min="0" step="1" name="recording[duration]" value="<%= @recording.duration %>">
+          </label>
+          <label class="form-field">
+            <span class="field-label">Activity %</span>
+            <input class="input" type="number" step="1" name="recording[percentage]" value="<%= @recording.percentage %>">
+            <% if @recording.percentage.to_i.negative? %>
+              <span class="field-hint">Negative — counted as 0% in all figures and charts.</span>
+            <% end %>
+          </label>
+          <label class="form-field">
+            <span class="field-label">Latitude</span>
+            <input class="input" type="number" step="any" min="-90" max="90" name="recording[latitude]" value="<%= @recording.latitude %>">
+          </label>
+          <label class="form-field">
+            <span class="field-label">Longitude</span>
+            <input class="input" type="number" step="any" min="-180" max="180" name="recording[longitude]" value="<%= @recording.longitude %>">
+          </label>
+          <label class="form-field full">
+            <span class="field-label">User ID</span>
+            <input class="input" type="text" name="recording[user_id]" value="<%= @recording.user_id %>" required>
+          </label>
+        </div>
+
+        <div class="form-actions">
+          <a class="btn" href="<%= @return_to %>">Cancel</a>
+          <button type="submit" class="btn btn-primary">Save changes</button>
+        </div>
+      </form>
+
+      <form class="delete-form" method="post" action="<%= delete_admin_recording_path(@recording) %>"
+            data-confirm="Delete this recording permanently? This cannot be undone.">
+        <input type="hidden" name="return_to" value="<%= @return_to %>">
+        <button type="submit" class="btn btn-destructive">🗑&nbsp; Delete recording</button>
+      </form>
+    </div>
+  </div>
+</main>

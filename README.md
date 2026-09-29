@@ -68,6 +68,22 @@ It used to live at `/`; the website took that over.
   (`config.public_file_server.enabled = true`), not via an asset pipeline — which is why the app
   stays "light" despite now rendering HTML.
 
+**Editing and deleting recordings.** The detail modal has **Edit** and **Delete** buttons
+(`Admin::RecordingsController`). Edit opens `/admin/recordings/:id/edit`, a form for the
+recording's details: model, version, build, user ID, date, slot, duration, activity %, latitude
+and longitude (`Recording::ADMIN_EDITABLE_COLUMNS`). Timestamps and amplitudes can't be edited.
+Delete asks for confirmation, removes the row, and removes its stored WAV file if it has one.
+Both send you back to the same dashboard view with a confirmation banner. Browser forms use
+POST (`POST /admin/recordings/:id`, `POST /admin/recordings/:id/delete`), because the app is
+`api_only` and has no `_method` override. `PATCH`/`DELETE /admin/recordings/:id` also work for
+scripts. Everything sits behind the same admin auth.
+
+**Negative activity.** A negative activity percentage (`recordings.percentage < 0`) counts as
+**0**. This applies to every average, sum, ranking and chart (`Recording::CLAMPED_PERCENTAGE_SQL`,
+`Recording#activity_percentage`), and to every JSON response (`Recording#as_json`). This covers the
+mobile app's `/api/v1/statistics`, the admin dashboard and the panel. The stored value is not
+changed.
+
 **Access control.** Set `ANAVA_ADMIN_PASSWORD` (and optionally `ANAVA_ADMIN_USERNAME`, default
 `admin`) and `/admin` requires HTTP Basic auth. Leave it unset and the dashboard stays open — the
 same posture it had at `/` — but every page renders a warning banner saying so. Set it in
@@ -151,6 +167,9 @@ Same as the original API (see the root README for request/response details):
 |--------|------|
 | GET | `/` (the public website — see "The public website" above) |
 | GET | `/admin` (HTML dashboard — see "The admin dashboard" above) |
+| GET | `/admin/recordings/:id/edit` (admin edit form) |
+| POST/PATCH | `/admin/recordings/:id` (admin update) |
+| POST | `/admin/recordings/:id/delete`, DELETE `/admin/recordings/:id` (admin delete) |
 | GET | `/panel`, `/panel/enter?token=`, `/panel/sign-out` (see "The per-user panel") |
 | POST | `/api/v1/panel/magic-link` |
 | GET | `/health` |
@@ -198,6 +217,7 @@ app/controllers/panel_links_controller.rb # POST /api/v1/panel/magic-link
 app/controllers/panel_controller.rb # the per-user panel at /panel (see "The per-user panel")
 app/controllers/admin/base_controller.rb  # optional HTTP Basic auth for everything under /admin
 app/controllers/admin/dashboard_controller.rb # the HTML dashboard at /admin
+app/controllers/admin/recordings_controller.rb # admin edit/delete of a single recording
 app/views/admin/dashboard/          # dashboard ERB templates (index + recordings/analytics partials)
 app/views/panel/                    # panel ERB templates (show + signed-out/expired-link states)
 app/views/layouts/admin.html.erb    # dashboard layout (loads admin assets + the modal markup)
