@@ -35,6 +35,13 @@ changed:
   `Recording#activity_percentage`.
 - NULL stays NULL, so `AVG` still skips recordings with no score.
 
+Fix: the admin modal's Edit button could appear dead. Its URL is filled in by
+`dashboard.js`, which browsers cache, so a stale copy left the link at `#`. The admin
+layout now loads `dashboard.css` and `dashboard.js` with `?v=<file mtime>`, so a changed
+asset is always refetched. The Edit/Delete buttons also moved to just under the details
+grid, so they're visible without scrolling past the waveform and map. Checked in a
+browser: modal, Edit, save, and redirect with the banner.
+
 Fix: `Admin::RecordingsController#with_notice` crashed with `NoMethodError` (500)
 after every update and delete. A RuboCop `Style/HashExcept` autocorrect had changed
 `.reject { ... }` to `.except('notice')` on the Array that `URI.decode_www_form`

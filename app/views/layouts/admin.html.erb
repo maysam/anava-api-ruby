@@ -4,9 +4,12 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Anava Recordings Dashboard</title>
-    <link rel="stylesheet" href="/admin/dashboard.css">
+    <%# ?v=<mtime> busts the browser cache when the static assets change, so a
+        stale dashboard.js can't leave new markup (e.g. the Edit link) unwired. %>
+    <% asset_version = ->(name) { File.mtime(Rails.public_path.join('admin', name)).to_i } %>
+    <link rel="stylesheet" href="/admin/dashboard.css?v=<%= asset_version.call('dashboard.css') %>">
     <script src="/admin/vendor/chart.umd.min.js" defer></script>
-    <script src="/admin/dashboard.js" defer></script>
+    <script src="/admin/dashboard.js?v=<%= asset_version.call('dashboard.js') %>" defer></script>
   </head>
   <body>
     <% unless admin_authentication_configured? %>
@@ -29,6 +32,16 @@
 
         <div class="info-grid"></div>
 
+        <%# Edit link + delete form; their URLs are filled per recording by dashboard.js. %>
+        <section class="modal-actions">
+          <a class="btn" data-edit-link href="#">✎&nbsp; Edit</a>
+          <form method="post" data-delete-form
+                data-confirm="Delete this recording permanently? This cannot be undone.">
+            <input type="hidden" name="return_to" value="">
+            <button type="submit" class="btn btn-destructive">🗑&nbsp; Delete</button>
+          </form>
+        </section>
+
         <section data-amplitude-section hidden>
           <div class="section-label"><span>Amplitude Waveform</span></div>
           <div class="chart-wrap" style="height: 120px;">
@@ -45,15 +58,6 @@
           <button type="button" class="btn btn-block" data-download>⬇&nbsp; Download JSON</button>
         </section>
 
-        <%# Edit link + delete form; their URLs are filled per recording by dashboard.js. %>
-        <section class="modal-actions">
-          <a class="btn" data-edit-link href="#">✎&nbsp; Edit</a>
-          <form method="post" data-delete-form
-                data-confirm="Delete this recording permanently? This cannot be undone.">
-            <input type="hidden" name="return_to" value="">
-            <button type="submit" class="btn btn-destructive">🗑&nbsp; Delete</button>
-          </form>
-        </section>
       </div>
     </div>
   </body>
